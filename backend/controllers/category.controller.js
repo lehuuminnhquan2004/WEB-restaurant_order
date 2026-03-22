@@ -13,10 +13,10 @@ const createCategory = async(req, res)=>{
     try{
         const {name}= req.body
         if(!name){
-            res.status(400).json({message: 'Thiếu dữ liệu tên danh mục'})
+            return res.status(400).json({message: 'Thiếu dữ liệu tên danh mục'})
         }
 
-        const [result] = await db.query(`INSERT INTO categories (name) VALUE (?)`, [name])
+        const [result] = await db.query(`INSERT INTO categories (name) VALUES (?)`, [name])
 
         res.status(201).json({message: 'Thêm danh mục thành công',
             categoryId: result.insertId,
@@ -30,7 +30,7 @@ const updateCategory = async(req, res)=>{
     try{
         const {name}= req.body
         if(!name){
-            res.status(400).json({message: 'Thiếu dữ liệu tên danh mục'})
+            return res.status(400).json({message: 'Thiếu dữ liệu tên danh mục'})
         }
         const [result] = await db.query(`UPDATE categories SET name = ? WHERE id = ?`,
             [name, req.params.id]
