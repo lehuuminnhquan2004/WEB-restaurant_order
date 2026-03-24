@@ -1,17 +1,38 @@
 const db = require('../config/db')
 
 const getAllProducts = async (req, res) => {
-    try {
-        const [rows] = await db.query(`
-            SELECT p.*, c.name as category_name
-            FROM products p
-            LEFT JOIN categories c ON p.category_id = c.id
-            ORDER BY p.category_id
-        `)
-        res.json(rows)
-    } catch (error) {
-        res.status(500).json({ message: 'Loi server', error: error.message })
+  try {
+    const { category_id, status } = req.query
+
+    let whereClause = 'WHERE 1=1'
+    let params = []
+
+    if (category_id) {
+      whereClause += ' AND p.category_id = ?'
+      params.push(parseInt(category_id))
     }
+
+    if (status) {
+      const validStatuses = ['available', 'unavailable']
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({ message: 'Trạng thái không hợp lệ' })
+      }
+      whereClause += ' AND p.status = ?'
+      params.push(status)
+    }
+
+    const [rows] = await db.query(`
+      SELECT p.*, c.name as category_name
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      ${whereClause}
+      ORDER BY p.category_id
+    `, params)
+
+    res.json(rows)
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
+  }
 }
 
 const getProductById = async (req, res) => {
