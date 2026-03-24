@@ -232,10 +232,69 @@ const updateOrderItemStatus = async (req, res) => {
   }
 }
 
+const removeOrderItem = async (req, res) => {
+  try {
+    const { id, item_id } = req.params
+
+    const [orders] = await db.query(
+      'SELECT status FROM orders WHERE id = ?',
+      [id]
+    )
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy order' })
+    }
+
+    if (['preparing', 'done', 'paid'].includes(orders[0].status)) {
+      return res.status(400).json({
+        message: 'Không thể xóa món đã bắt đầu chế biến',
+      })
+    }
+
+    const [items] = await db.query(
+      'SELECT * FROM order_items WHERE id = ? AND order_id = ?',
+      [item_id, id]
+    )
+
+    if (items.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy món' })
+    }
+
+    await db.query(
+      'DELETE FROM order_items WHERE id = ?',
+      [item_id]
+    )
+
+    const [remaining] = await db.query(
+      'SELECT * FROM order_items WHERE order_id = ?',
+      [id]
+    )
+
+    if (remaining.length === 0) {
+      await db.query('DELETE FROM orders WHERE id = ?', [id])
+      return res.json({ message: 'Đã xóa món và hủy order vì không còn món nào' })
+    }
+
+    const newTotal = remaining.reduce(
+      (sum, item) => sum + item.price * item.quantity, 0
+    )
+
+    await db.query(
+      'UPDATE orders SET total_price = ? WHERE id = ?',
+      [newTotal, id]
+    )
+
+    res.json({ message: 'Xóa món thành công', total_price: newTotal })
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
+  }
+}
+
 module.exports = {
   createOrder,
   getOrdersByTable,
   getAllOrders,
   updateOrderStatus,
   updateOrderItemStatus,
+  removeOrderItem,
 }
