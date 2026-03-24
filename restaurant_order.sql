@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1:3306
--- Thời gian đã tạo: Th3 21, 2026 lúc 04:22 PM
+-- Thời gian đã tạo: Th3 24, 2026 lúc 01:23 PM
 -- Phiên bản máy phục vụ: 8.4.7
 -- Phiên bản PHP: 8.0.30
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `categories`
@@ -58,7 +58,17 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `table_id` (`table_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `orders`
+--
+
+INSERT INTO `orders` (`id`, `table_id`, `status`, `total_price`, `created_at`) VALUES
+(2, 1, 'paid', 150000.00, '2026-03-23 16:33:17'),
+(3, 2, 'done', 15000.00, '2026-03-23 16:34:09'),
+(4, 1, 'paid', 170000.00, '2026-03-24 06:08:20'),
+(5, 3, 'confirmed', 40000.00, '2026-03-24 06:11:59');
 
 -- --------------------------------------------------------
 
@@ -78,7 +88,19 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   KEY `product_id` (`product_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`, `note`, `status`) VALUES
+(3, 2, 1, 2, 60000.00, 'Ít cay', 'done'),
+(4, 2, 3, 1, 30000.00, NULL, 'done'),
+(5, 3, 4, 1, 15000.00, 'cay', 'done'),
+(6, 4, 6, 2, 55000.00, 'Ít cay', 'pending'),
+(7, 4, 2, 1, 60000.00, NULL, 'pending'),
+(8, 5, 5, 2, 20000.00, 'Ít cay', 'pending');
 
 -- --------------------------------------------------------
 
@@ -97,18 +119,19 @@ CREATE TABLE IF NOT EXISTS `products` (
   `status` enum('available','unavailable') COLLATE utf8mb4_unicode_ci DEFAULT 'available',
   PRIMARY KEY (`id`),
   KEY `category_id` (`category_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `products`
 --
 
 INSERT INTO `products` (`id`, `name`, `price`, `image`, `description`, `category_id`, `status`) VALUES
-(1, 'Cơm gà', 50000.00, NULL, 'Cơm gà chiên giòn', 1, 'available'),
+(1, 'Cơm gà đặc biệt', 60000.00, NULL, NULL, 1, 'available'),
 (2, 'Phở bò', 60000.00, NULL, 'Phở bò truyền thống', 1, 'available'),
 (3, 'Trà sữa', 30000.00, NULL, 'Trà sữa trân châu', 2, 'available'),
 (4, 'Coca Cola', 15000.00, NULL, 'Nước ngọt có gas', 2, 'available'),
-(5, 'Bánh flan', 20000.00, NULL, 'Bánh flan caramel', 3, 'available');
+(5, 'Bánh flan', 20000.00, NULL, 'Bánh flan caramel', 3, 'available'),
+(6, 'Bún bò', 55000.00, NULL, 'Bún bò Huế truyền thống', 1, 'available');
 
 -- --------------------------------------------------------
 
@@ -123,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `tables` (
   `qr_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` enum('available','occupied') COLLATE utf8mb4_unicode_ci DEFAULT 'available',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tables`
@@ -132,7 +155,9 @@ CREATE TABLE IF NOT EXISTS `tables` (
 INSERT INTO `tables` (`id`, `name`, `qr_code`, `status`) VALUES
 (1, 'Bàn 1', '/table/1', 'available'),
 (2, 'Bàn 2', '/table/2', 'available'),
-(3, 'Bàn 3', '/table/3', 'available');
+(3, 'Bàn 3', '/table/3', 'available'),
+(4, 'Bàn 4', '/table/4', 'available'),
+(6, 'Bàn 5', '/table/6', 'available');
 
 -- --------------------------------------------------------
 
@@ -147,8 +172,18 @@ CREATE TABLE IF NOT EXISTS `table_sessions` (
   `token` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `table_id` (`table_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  UNIQUE KEY `unique_table_id` (`table_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `table_sessions`
+--
+
+INSERT INTO `table_sessions` (`id`, `table_id`, `token`, `created_at`) VALUES
+(1, 4, 'e7938bfb6d66afb55f792b459137170b62abaa083cc66b10d6523087aaacfc7b', '2026-03-22 16:28:40'),
+(5, 6, '74ab4db69091fd8bb292d88529b94fab3efea0173bf9b3fb7f5c230e9484bb54', '2026-03-22 16:42:58'),
+(6, 1, '02f7454900f750ee267e4298cb6199ffba78ed6863376989f48f6b3aef2138a9', '2026-03-23 16:38:03'),
+(7, 3, '1319abdebe64dae992654f3639450a2dd5ae6aafea1731d5e50b6f88394caa30', '2026-03-24 06:17:11');
 
 -- --------------------------------------------------------
 
@@ -161,10 +196,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `role` enum('admin','staff') COLLATE utf8mb4_unicode_ci DEFAULT 'staff',
+  `role` enum('admin','staff','kitchen') COLLATE utf8mb4_unicode_ci DEFAULT 'staff',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `users`
@@ -172,7 +207,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`) VALUES
 (1, 'admin', '$2a$12$zy04MV5lownkJLCsVxUmSeY.TghbiQOTtGhdgu48smd5HprRCDfei', 'admin'),
-(2, 'staff1', '$2a$12$zy04MV5lownkJLCsVxUmSeY.TghbiQOTtGhdgu48smd5HprRCDfei', 'staff');
+(2, 'staff1', '$2a$12$zy04MV5lownkJLCsVxUmSeY.TghbiQOTtGhdgu48smd5HprRCDfei', 'staff'),
+(3, 'kitchen1', '$2a$12$zy04MV5lownkJLCsVxUmSeY.TghbiQOTtGhdgu48smd5HprRCDfei', 'kitchen');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

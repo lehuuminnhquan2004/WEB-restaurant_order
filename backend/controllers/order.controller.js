@@ -196,13 +196,6 @@ const updateOrderStatus = async (req, res) => {
         ['available', tableId]
       )
 
-      const newToken = crypto.randomBytes(32).toString('hex')
-
-      await db.query(
-        `INSERT INTO table_sessions (table_id, token) VALUES (?, ?)
-         ON DUPLICATE KEY UPDATE token = ?`,
-        [tableId, newToken, newToken]
-      )
     }
 
     res.json({ message: `Cập nhật trạng thái thành công: ${status}` })
