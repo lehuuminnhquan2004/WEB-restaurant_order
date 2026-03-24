@@ -1,4 +1,5 @@
 const db = require('../config/db')
+const crypto = require('crypto')
 
 const createOrder = async (req, res) => {
   try {
@@ -155,19 +156,27 @@ const updateOrderStatus = async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy order' })
     }
 
-    if (status === 'paid') {
-      const [orders] = await db.query(
-        'SELECT table_id FROM orders WHERE id = ?',
-        [req.params.id]
-      )
-      const tableId = orders[0].table_id
+    const [orders] = await db.query(
+      'SELECT table_id FROM orders WHERE id = ?',
+      [req.params.id]
+    )
+    const tableId = orders[0].table_id
 
+    // ✅ confirm → bàn occupied
+    if (status === 'confirmed') {
+      await db.query(
+        'UPDATE tables SET status = ? WHERE id = ?',
+        ['occupied', tableId]
+      )
+    }
+
+    // ✅ paid → bàn available + token mới
+    if (status === 'paid') {
       await db.query(
         'UPDATE tables SET status = ? WHERE id = ?',
         ['available', tableId]
       )
 
-      const crypto = require('crypto')
       const newToken = crypto.randomBytes(32).toString('hex')
 
       await db.query(
@@ -186,6 +195,7 @@ const updateOrderStatus = async (req, res) => {
 const updateOrderItemStatus = async (req, res) => {
   try {
     const { status } = req.body
+    const { id, item_id } = req.params
 
     if (!['pending', 'done'].includes(status)) {
       return res.status(400).json({ message: 'Trạng thái không hợp lệ' })
@@ -193,11 +203,27 @@ const updateOrderItemStatus = async (req, res) => {
 
     const [result] = await db.query(
       'UPDATE order_items SET status = ? WHERE id = ?',
-      [status, req.params.item_id]
+      [status, item_id]
     )
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Không tìm thấy món' })
+    }
+
+    if (status === 'done') {
+      const [items] = await db.query(
+        `SELECT status FROM order_items WHERE order_id = ?`,
+        [id]
+      )
+
+      const allDone = items.every((item) => item.status === 'done')
+
+      if (allDone) {
+        await db.query(
+          'UPDATE orders SET status = ? WHERE id = ?',
+          ['done', id]
+        )
+      }
     }
 
     res.json({ message: 'Cập nhật trạng thái món thành công' })
