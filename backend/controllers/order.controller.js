@@ -111,28 +111,47 @@ const getOrdersByTable = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
+    const { status } = req.query
+
+    const validStatuses = ['pending', 'confirmed', 'preparing', 'done', 'paid']
+
+    let whereClause = ''
+    let params = []
+
+    if (status) {
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({ message: 'Trạng thái không hợp lệ' })
+      }
+      whereClause = 'WHERE o.status = ?'
+      params = [status]
+    }
+
     const [orders] = await db.query(`
       SELECT o.*, t.name as table_name
       FROM orders o
       LEFT JOIN tables t ON o.table_id = t.id
-      WHERE o.status != 'paid'
+      ${whereClause}
       ORDER BY o.created_at DESC
-    `)
+    `, params)
 
-    const ordersWithItems = await Promise.all(
-      orders.map(async (order) => {
-        const [items] = await db.query(
-          `SELECT oi.*, p.name as product_name
-           FROM order_items oi
-           LEFT JOIN products p ON oi.product_id = p.id
-           WHERE oi.order_id = ?`,
-          [order.id]
-        )
-        return { ...order, items }
-      })
+    if (orders.length === 0) return res.json([])
+
+    const orderIds = orders.map((order) => order.id)
+
+    const [items] = await db.query(
+      `SELECT oi.*, p.name as product_name
+       FROM order_items oi
+       LEFT JOIN products p ON oi.product_id = p.id
+       WHERE oi.order_id IN (?)`,
+      [orderIds]
     )
 
-    res.json(ordersWithItems)
+    const result = orders.map((order) => ({
+      ...order,
+      items: items.filter((item) => item.order_id === order.id),
+    }))
+
+    res.json(result)
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
