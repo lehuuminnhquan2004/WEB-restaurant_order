@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1:3306
--- Thời gian đã tạo: Th3 24, 2026 lúc 01:23 PM
+-- Thời gian đã tạo: Th3 24, 2026 lúc 05:13 PM
 -- Phiên bản máy phục vụ: 8.4.7
 -- Phiên bản PHP: 8.0.30
 
@@ -143,7 +143,7 @@ DROP TABLE IF EXISTS `tables`;
 CREATE TABLE IF NOT EXISTS `tables` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `qr_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` enum('available','occupied') COLLATE utf8mb4_unicode_ci DEFAULT 'available',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -152,38 +152,12 @@ CREATE TABLE IF NOT EXISTS `tables` (
 -- Đang đổ dữ liệu cho bảng `tables`
 --
 
-INSERT INTO `tables` (`id`, `name`, `qr_code`, `status`) VALUES
-(1, 'Bàn 1', '/table/1', 'available'),
-(2, 'Bàn 2', '/table/2', 'available'),
-(3, 'Bàn 3', '/table/3', 'available'),
-(4, 'Bàn 4', '/table/4', 'available'),
-(6, 'Bàn 5', '/table/6', 'available');
-
--- --------------------------------------------------------
-
---
--- Cấu trúc bảng cho bảng `table_sessions`
---
-
-DROP TABLE IF EXISTS `table_sessions`;
-CREATE TABLE IF NOT EXISTS `table_sessions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `table_id` int DEFAULT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_table_id` (`table_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Đang đổ dữ liệu cho bảng `table_sessions`
---
-
-INSERT INTO `table_sessions` (`id`, `table_id`, `token`, `created_at`) VALUES
-(1, 4, 'e7938bfb6d66afb55f792b459137170b62abaa083cc66b10d6523087aaacfc7b', '2026-03-22 16:28:40'),
-(5, 6, '74ab4db69091fd8bb292d88529b94fab3efea0173bf9b3fb7f5c230e9484bb54', '2026-03-22 16:42:58'),
-(6, 1, '02f7454900f750ee267e4298cb6199ffba78ed6863376989f48f6b3aef2138a9', '2026-03-23 16:38:03'),
-(7, 3, '1319abdebe64dae992654f3639450a2dd5ae6aafea1731d5e50b6f88394caa30', '2026-03-24 06:17:11');
+INSERT INTO `tables` (`id`, `name`, `token`, `status`) VALUES
+(1, 'Bàn 1', '', 'available'),
+(2, 'Bàn 2', '', 'available'),
+(3, 'Bàn 3', '', 'available'),
+(4, 'Bàn 4', '', 'available'),
+(6, 'Bàn 5', '', 'available');
 
 -- --------------------------------------------------------
 
