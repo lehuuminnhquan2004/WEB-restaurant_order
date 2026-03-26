@@ -1,0 +1,159 @@
+/* ================================
+   Login Page
+   ================================ */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-page);
+  /* Subtle radial gradient background */
+  background-image:
+    radial-gradient(ellipse at 80% 10%, rgba(37, 99, 235, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 10% 90%, rgba(37, 99, 235, 0.05) 0%, transparent 60%);
+  padding: var(--space-md);
+}
+
+/* Card */
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+/* Top accent bar */
+.login-accent-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), #60a5fa);
+}
+
+.login-body {
+  padding: var(--space-xl) var(--space-xl) var(--space-xl);
+}
+
+/* Header */
+.login-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.login-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: var(--primary);
+  border-radius: var(--radius-lg);
+  font-size: 26px;
+  margin-bottom: var(--space-md);
+  box-shadow: var(--shadow-primary);
+}
+
+.login-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+
+.login-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Input với icon trái */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.input-with-icon {
+  padding-left: 38px;
+}
+
+.input-with-action {
+  padding-right: 38px;
+}
+
+/* Nút toggle show/hide password */
+.input-action {
+  position: absolute;
+  right: 10px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.input-action:hover {
+  color: var(--text-secondary);
+  background: var(--gray-100);
+}
+
+/* Error message */
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--danger-light);
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  color: var(--danger);
+  font-size: var(--font-size-sm);
+}
+
+/* Submit button */
+.login-submit {
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* ================================
+   Responsive
+   ================================ */
+@media (max-width: 480px) {
+  .login-body {
+    padding: var(--space-lg);
+  }
+}

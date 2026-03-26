@@ -1,0 +1,269 @@
+/* ================================
+   RESTAURANT OS — Design Tokens
+   Import file này đầu tiên trong main.jsx
+   ================================ */
+
+:root {
+  /* --- Brand colors --- */
+  --primary:        #2563eb;   /* blue-600 */
+  --primary-hover:  #1d4ed8;   /* blue-700 */
+  --primary-light:  #eff6ff;   /* blue-50  */
+  --primary-shadow: rgba(37, 99, 235, 0.25);
+
+  /* --- Semantic colors --- */
+  --success:        #16a34a;
+  --success-light:  #f0fdf4;
+  --warning:        #d97706;
+  --warning-light:  #fffbeb;
+  --danger:         #dc2626;
+  --danger-light:   #fef2f2;
+  --info:           #0891b2;
+  --info-light:     #ecfeff;
+
+  /* --- Neutral --- */
+  --gray-50:        #f8fafc;
+  --gray-100:       #f1f5f9;
+  --gray-200:       #e2e8f0;
+  --gray-300:       #cbd5e1;
+  --gray-400:       #94a3b8;
+  --gray-500:       #64748b;
+  --gray-600:       #475569;
+  --gray-700:       #334155;
+  --gray-800:       #1e293b;
+  --gray-900:       #0f172a;
+
+  /* --- Text --- */
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+  --text-inverse:   #ffffff;
+
+  /* --- Background --- */
+  --bg-page:        #f1f5f9;
+  --bg-card:        #ffffff;
+  --bg-input:       #f8fafc;
+
+  /* --- Border --- */
+  --border:         #e2e8f0;
+  --border-focus:   #2563eb;
+
+  /* --- Status badge colors --- */
+  --status-pending:   #d97706;
+  --status-confirmed: #2563eb;
+  --status-preparing: #7c3aed;
+  --status-done:      #16a34a;
+  --status-paid:      #64748b;
+  --status-available: #16a34a;
+  --status-occupied:  #dc2626;
+
+  /* --- Spacing --- */
+  --space-xs:   4px;
+  --space-sm:   8px;
+  --space-md:   16px;
+  --space-lg:   24px;
+  --space-xl:   32px;
+  --space-2xl:  48px;
+
+  /* --- Border radius --- */
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+  --radius-full: 9999px;
+
+  /* --- Shadow --- */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.10);
+  --shadow-primary: 0 4px 16px var(--primary-shadow);
+
+  /* --- Font --- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-size-xs:   12px;
+  --font-size-sm:   13px;
+  --font-size-md:   14px;
+  --font-size-lg:   16px;
+  --font-size-xl:   18px;
+  --font-size-2xl:  22px;
+
+  /* --- Transition --- */
+  --transition: all 0.2s ease;
+
+  /* --- Layout --- */
+  --sidebar-width:      240px;
+  --topbar-height:      60px;
+  --bottom-nav-height:  64px;
+}
+
+/* ================================
+   Reset & Base
+   ================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  background: var(--bg-page);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, textarea, select {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ================================
+   Utility classes dùng chung
+   ================================ */
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-primary);
+}
+.btn-primary:hover { background: var(--primary-hover); }
+
+.btn-secondary {
+  background: var(--gray-100);
+  color: var(--text-primary);
+}
+.btn-secondary:hover { background: var(--gray-200); }
+
+.btn-danger {
+  background: var(--danger);
+  color: var(--text-inverse);
+}
+.btn-danger:hover { background: #b91c1c; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.btn-ghost:hover {
+  background: var(--gray-100);
+  color: var(--text-primary);
+}
+
+.btn-sm {
+  padding: 5px 12px;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-sm);
+}
+
+.btn-lg {
+  padding: 12px 24px;
+  font-size: var(--font-size-lg);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Status badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.badge-pending   { background: #fef3c7; color: var(--status-pending); }
+.badge-confirmed { background: #dbeafe; color: var(--status-confirmed); }
+.badge-preparing { background: #ede9fe; color: var(--status-preparing); }
+.badge-done      { background: #dcfce7; color: var(--status-done); }
+.badge-paid      { background: var(--gray-100); color: var(--status-paid); }
+.badge-available { background: #dcfce7; color: var(--status-available); }
+.badge-occupied  { background: #fee2e2; color: var(--status-occupied); }
+
+/* Card */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Input */
+.input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: var(--font-size-md);
+  outline: none;
+  transition: var(--transition);
+}
+.input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+.input::placeholder { color: var(--text-muted); }
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  border: none;
+}
+
+/* Spinner */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

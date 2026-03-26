@@ -1,0 +1,20 @@
+import {Navigate, Outlet} from 'react-router-dom'
+import {useAuthStore} from '../../store/authStore'
+
+function ProtectedRoute({allowedRoles = []}){
+    const {token, user}=useAuthStore()
+
+    if(!token||!user){
+        return <Navigate to="/login" replace />
+    }
+
+    // Đã đăng nhập nhưng sai role → về login
+    if (!allowedRoles.includes(user.role)) {
+        return <Navigate to="/login" replace />
+    }
+    
+    // Hợp lệ → render children
+    return <Outlet />
+}
+
+export default ProtectedRoute
