@@ -1,7 +1,8 @@
 import instance from './axios'
 
 const authApi = {
-  login: (data) => instance.post('/auth/login', data),
+  login: ({ username, password }) =>
+    instance.post('/auth/login', { username, password }),
 }
 
 export default authApi

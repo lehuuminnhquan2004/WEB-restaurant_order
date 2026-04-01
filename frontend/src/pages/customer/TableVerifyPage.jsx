@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { verifyTable } from '../../api/tableApi'
+import tableApi from '../../api/tableApi'
 import useTableStore from '../../store/tableStore'
 import useCartStore from '../../store/cartStore'
 
@@ -9,28 +9,46 @@ function TableVerifyPage(){
     const navigate=useNavigate()
     const {setTable}=useTableStore()
     const {clearCart}=useCartStore()
+    const [hasError, setHasError] = useState(false)
 
     useEffect(()=>{
+        if (!token) {
+            return
+        }
+
         async function verify() {
             try{
-                const res = await verifyTable(token)
-                const {id,name}=res.data
+                const res = await tableApi.verify(token)
+                const { table } = res.data
 
                 const currentToken=useTableStore.getState().tableToken
                 if(currentToken&&currentToken!==token){
                     clearCart()
                 }
 
-                setTable(id, name, token)
+                setTable(table.id, table.name, table.token ?? token)
                 navigate('/menu',{replace: true})
-            }catch(err){
-                navigate('/invalid-table', { replace: true })
+            }catch{
+                setHasError(true)
             }
         }
 
         verify()
 
-    },[token])
+    },[clearCart, navigate, setTable, token])
+
+    if (!token || hasError) {
+        return (
+            <div className="flex min-h-screen items-center justify-center px-4">
+                <div className="max-w-sm rounded-xl border border-red-200 bg-white p-6 text-center shadow-sm">
+                    <h1 className="mb-2 text-lg font-semibold text-red-600">Khong the xac thuc ban</h1>
+                    <p className="text-sm text-gray-600">
+                        Ma QR khong hop le hoac da het han. Vui long lien he nhan vien de duoc ho tro.
+                    </p>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="flex items-center justify-center min-h-screen">

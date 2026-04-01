@@ -1,6 +1,6 @@
 import {create} from 'zustand'
 
-const userCartStore=create((set,get)=>({
+const useCartStore=create((set,get)=>({
     items:[],
 
     addItem: (product)=>{
@@ -42,7 +42,7 @@ const userCartStore=create((set,get)=>({
         }else{
             set({
                 items: items.map((i)=>
-                i.product_id===product_id ? {...i,quantity: quantity-1}:i
+                i.product_id===product_id ? {...i,quantity: i.quantity-1}:i
                 ),
             })
         }
@@ -52,11 +52,15 @@ const userCartStore=create((set,get)=>({
         set({items:get().items.filter((i)=>i.product_id!==product_id)})
     },
 
-    updateNode: (product_id,note)=>{
+    updateNote: (product_id,note)=>{
         set({
             items:get().items.map((i)=>
             i.product_id===product_id ? {...i,note}:i),
         })
+    },
+
+    updateNode: (product_id,note)=>{
+        get().updateNote(product_id, note)
     },
 
     clearCart: () => set({ items: [] }),

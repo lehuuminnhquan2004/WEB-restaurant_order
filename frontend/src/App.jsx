@@ -1,67 +1,72 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import useAuthStore from './store/authStore'
+// src/App.jsx
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// Auth
-import LoginPage from './pages/LoginPage'
+// Layout & Guards
+import DashboardLayout from './components/shared/DashboardLayout';
+import ProtectedRoute from './components/shared/ProtectedRoute';
 
-// Customer
-import TableVerifyPage from './pages/customer/TableVerifyPage'
-import MenuPage from './pages/customer/MenuPage'
-import OrderPage from './pages/customer/OrderPage'
+// Pages — có sẵn
+import LoginPage from './pages/LoginPage';
+import TableVerifyPage from './pages/customer/TableVerifyPage';
 
-// Staff
-import StaffOrderPage from './pages/staff/StaffOrderPage'
-import StaffTablePage from './pages/staff/StaffTablePage'
+// Pages — placeholder (thay dần bằng page thật)
+import {
+  MenuPage,
+  OrderPage,
+  StaffOrderPage,
+  StaffTablePage,
+  KitchenPage,
+  AdminDashboardPage,
+  AdminProductPage,
+  AdminCategoryPage,
+  AdminTablePage,
+  AdminUserPage,
+} from './pages/PlaceholderPage';
 
-// Kitchen
-import KitchenPage from './pages/kitchen/KitchenPage'
-
-// Admin
-import AdminProductPage from './pages/admin/AdminProductPage'
-import AdminCategoryPage from './pages/admin/AdminCategoryPage'
-import AdminTablePage from './pages/admin/AdminTablePage'
-
-// Shared
-import ProtectedRoute from './components/shared/ProtectedRoute'
-
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* Mặc định → Login */}
+        {/* ── Public ── */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Khách quét QR — public, không cần đăng nhập */}
+        {/* ── Customer (QR) — không cần login ── */}
         <Route path="/table/:token" element={<TableVerifyPage />} />
         <Route path="/menu" element={<MenuPage />} />
-        <Route path="/order" element={<OrderPage />} />
+        <Route path="/orders" element={<OrderPage />} />
 
-        {/* Staff */}
-        <Route element={<ProtectedRoute allowedRoles={['staff', 'admin']} />}>
-          <Route path="/staff/orders" element={<StaffOrderPage />} />
-          <Route path="/staff/tables" element={<StaffTablePage />} />
+        {/* ── Staff ── */}
+        <Route element={<ProtectedRoute roles={['staff', 'admin']} />}>
+          <Route element={<DashboardLayout />}>
+            <Route path="/staff/orders" element={<StaffOrderPage />} />
+            <Route path="/staff/tables" element={<StaffTablePage />} />
+          </Route>
         </Route>
 
-        {/* Kitchen */}
-        <Route element={<ProtectedRoute allowedRoles={['kitchen', 'admin']} />}>
-          <Route path="/kitchen" element={<KitchenPage />} />
+        {/* ── Kitchen ── */}
+        <Route element={<ProtectedRoute roles={['kitchen', 'admin']} />}>
+          <Route element={<DashboardLayout />}>
+            <Route path="/kitchen" element={<KitchenPage />} />
+          </Route>
         </Route>
 
-        {/* Admin */}
-        <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-          <Route path="/admin/products" element={<AdminProductPage />} />
-          <Route path="/admin/categories" element={<AdminCategoryPage />} />
-          <Route path="/admin/tables" element={<AdminTablePage />} />
+        {/* ── Admin ── */}
+        <Route element={<ProtectedRoute roles={['admin']} />}>
+          <Route element={<DashboardLayout />}>
+            <Route path="/admin" element={<AdminDashboardPage />} />
+            <Route path="/admin/products" element={<AdminProductPage />} />
+            <Route path="/admin/categories" element={<AdminCategoryPage />} />
+            <Route path="/admin/tables" element={<AdminTablePage />} />
+            <Route path="/admin/users" element={<AdminUserPage />} />
+          </Route>
         </Route>
 
-        {/* Fallback */}
+        {/* ── 404 fallback ── */}
         <Route path="*" element={<Navigate to="/login" replace />} />
 
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
-
-export default App  

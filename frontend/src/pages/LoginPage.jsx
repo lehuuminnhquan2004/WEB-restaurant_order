@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { FiUser, FiLock, FiEye, FiEyeOff, FiAlertCircle } from 'react-icons/fi'
-import { login } from '../api/authApi'
+import authApi from '../api/authApi'
 import useAuthStore from '../store/authStore'
 import '../styles/LoginPage.css'
 
@@ -21,10 +21,8 @@ export default function LoginPage() {
   const [loading, setLoading]           = useState(false)
   const [error, setError]               = useState('')
 
-  // Đã đăng nhập → redirect luôn
   if (token && user) {
-    navigate(ROLE_REDIRECT[user.role] || '/login', { replace: true })
-    return null
+    return <Navigate to={ROLE_REDIRECT[user.role] || '/login'} replace />
   }
 
   const handleSubmit = async (e) => {
@@ -38,7 +36,10 @@ export default function LoginPage() {
 
     setLoading(true)
     try {
-      const res = await login(username.trim(), password)
+      const res = await authApi.login({
+        username: username.trim(),
+        password,
+      })
       const { token, user } = res.data
       setAuth(token, user)
       navigate(ROLE_REDIRECT[user.role] || '/login', { replace: true })
