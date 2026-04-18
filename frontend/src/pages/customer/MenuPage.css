@@ -1,0 +1,285 @@
+/* ============================================
+   MenuPage.css — mobile-first
+   ============================================ */
+
+.menu-page {
+  min-height: 100dvh;
+  background: #faf7f3;
+  /* padding bottom = cart bar height + safe area */
+  padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ── Header sticky ── */
+.menu-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #faf7f3;
+  /* Tính safe area trên (notch iPhone) */
+  padding-top: env(safe-area-inset-top, 0px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.07);
+}
+
+.menu-header__inner {
+  display: flex;
+  align-items: center;
+  /* space-between: badge bàn | title | spacer */
+  justify-content: space-between;
+  padding: 12px 16px 8px;
+}
+
+.menu-header__table {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 5px 11px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.menu-header__label {
+  font-size: 11px;
+  color: #999;
+  font-weight: 500;
+}
+
+.menu-header__table-num {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-primary, #e07a3a);
+}
+
+.menu-header__title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #1a1205;
+  margin: 0;
+  letter-spacing: -0.4px;
+}
+
+/* Spacer cân bằng layout 3 cột */
+.menu-header__spacer {
+  /* khớp với width của .menu-header__table */
+  min-width: 70px;
+}
+
+/* ── Category tabs ── */
+.menu-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 6px 16px 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.menu-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.menu-tabs__pill {
+  flex-shrink: 0;
+  /* Tap target tối thiểu 44px theo HIG */
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 18px;
+  border: 1.5px solid #e5ddd3;
+  background: #fff;
+  color: #888;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.menu-tabs__pill--active {
+  background: var(--color-primary, #e07a3a);
+  border-color: var(--color-primary, #e07a3a);
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(224,122,58,0.3);
+}
+
+.menu-tabs__pill:active {
+  opacity: 0.75;
+}
+
+/* ── Main content ── */
+.menu-main {
+  padding: 8px 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Section ── */
+.menu-section__title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1a1205;
+  margin: 0 0 12px;
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-section__title::after {
+  content: '';
+  flex: 1;
+  height: 1.5px;
+  background: linear-gradient(to right, #e5ddd3, transparent);
+  border-radius: 2px;
+}
+
+/* ── Grid — 2 cột mặc định (mobile) ── */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 480px) {
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .menu-main {
+    padding: 12px 20px 0;
+  }
+  .menu-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+}
+
+/* ── Cart bar cố định dưới ──
+   Quan trọng: safe-area-inset-bottom cho iPhone home bar */
+.menu-cart-bar {
+  position: fixed;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  left: 12px;
+  right: 12px;
+  z-index: 200;
+
+  background: #1a1205;
+  color: #fff;
+  border-radius: 16px;
+  padding: 13px 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  box-shadow: 0 6px 24px rgba(26,18,5,0.32);
+  animation: cart-slide-up 0.28s cubic-bezier(0.34,1.56,0.64,1);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menu-cart-bar:active {
+  transform: scale(0.975);
+  transition: transform 0.1s;
+}
+
+@keyframes cart-slide-up {
+  from { transform: translateY(100px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+.menu-cart-bar__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-cart-bar__icon {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  background: var(--color-primary, #e07a3a);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.menu-cart-bar__count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #fff;
+  color: var(--color-primary, #e07a3a);
+  font-size: 10px;
+  font-weight: 800;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-cart-bar__label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.menu-cart-bar__total {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-primary, #e07a3a);
+  white-space: nowrap;
+}
+
+/* ── Loading / Error ── */
+.menu-loading,
+.menu-error {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #888;
+  font-size: 15px;
+  padding: 24px;
+  text-align: center;
+}
+
+.menu-loading__spinner svg {
+  animation: spin 0.9s linear infinite;
+  color: var(--color-primary, #e07a3a);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.menu-error svg {
+  color: var(--color-primary, #e07a3a);
+}
+
+.menu-error button {
+  margin-top: 4px;
+  padding: 12px 28px;
+  min-height: 44px;
+  border-radius: 22px;
+  border: none;
+  background: var(--color-primary, #e07a3a);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}

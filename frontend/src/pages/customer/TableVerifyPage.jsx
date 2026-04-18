@@ -27,7 +27,7 @@ function TableVerifyPage(){
                 }
 
                 setTable(table.id, table.name, table.token ?? token)
-                navigate('/menu',{replace: true})
+                navigate('/home',{replace: true})
             }catch{
                 setHasError(true)
             }

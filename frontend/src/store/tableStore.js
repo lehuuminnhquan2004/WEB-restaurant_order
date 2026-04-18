@@ -18,6 +18,7 @@ const useTableStore = create(
       clearTable: () =>
         set({ tableId: null, tableName: null, tableToken: null }),
     }),
+    
     {
       name: 'table-storage', // key trong localStorage
     }

@@ -1,0 +1,292 @@
+/* ============================================
+   CartDrawer.css — mobile-first
+   ============================================ */
+
+/* ── Overlay ── */
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0,0,0,0.48);
+  /* blur nhẹ giúp focus vào drawer */
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.cart-overlay--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Sheet ── */
+.cart-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 301;
+  background: #faf7f3;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -6px 32px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+
+  /* Tối đa 85% chiều cao — còn chỗ nhìn thấy nội dung phía sau */
+  max-height: 85dvh;
+
+  /* Safe area bottom — home bar iPhone */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32,0.72,0,1);
+  will-change: transform;
+}
+
+.cart-sheet--open {
+  transform: translateY(0);
+}
+
+/* ── Handle ── */
+.cart-sheet__handle-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 4px;
+  flex-shrink: 0;
+}
+
+.cart-sheet__handle {
+  width: 36px;
+  height: 4px;
+  background: #d0c8be;
+  border-radius: 3px;
+}
+
+/* ── Header ── */
+.cart-sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 12px;
+  border-bottom: 1px solid #ede8e0;
+  flex-shrink: 0;
+}
+
+.cart-sheet__header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-sheet__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1a1205;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.cart-sheet__badge {
+  background: var(--color-primary, #e07a3a);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.cart-sheet__close-btn {
+  /* tap target 44×44 */
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #ede8e0;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cart-sheet__close-btn:active {
+  transform: scale(0.88);
+}
+
+/* ── Scrollable body ── */
+.cart-sheet__body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Empty ── */
+.cart-sheet__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+  gap: 10px;
+  color: #bbb;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ── Cart item ── */
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  /* Tránh bị co/vỡ layout */
+  min-width: 0;
+}
+
+.cart-item__info {
+  flex: 1;
+  min-width: 0; /* cho phép text truncate */
+}
+
+.cart-item__name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1205;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item__price {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary, #e07a3a);
+  margin: 3px 0 0;
+}
+
+/* Qty control — compact cho sheet nhỏ */
+.cart-item__qty-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f5f0ea;
+  border-radius: 18px;
+  padding: 3px 5px;
+  flex-shrink: 0;
+}
+
+.cart-item__qty-num {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-primary, #e07a3a);
+  min-width: 16px;
+  text-align: center;
+}
+
+.cart-item__qty-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  color: #1a1205;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cart-item__qty-btn--plus {
+  background: var(--color-primary, #e07a3a);
+  color: #fff;
+}
+
+.cart-item__qty-btn:active {
+  transform: scale(0.85);
+}
+
+.cart-item__delete-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s;
+}
+
+.cart-item__delete-btn:active {
+  color: #f87171;
+  transform: scale(0.88);
+}
+
+/* ── Footer ── */
+.cart-sheet__footer {
+  flex-shrink: 0;
+  padding: 12px 16px 14px;
+  border-top: 1px solid #ede8e0;
+  background: #faf7f3;
+}
+
+.cart-sheet__total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cart-sheet__total-label {
+  font-size: 13px;
+  color: #888;
+  font-weight: 500;
+}
+
+.cart-sheet__total-price {
+  font-size: 20px;
+  font-weight: 900;
+  color: #1a1205;
+  letter-spacing: -0.4px;
+}
+
+.cart-sheet__checkout-btn {
+  display: block;
+  width: 100%;
+  /* tap target tối thiểu 48px */
+  min-height: 50px;
+  background: #1a1205;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(26,18,5,0.28);
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+}
+
+.cart-sheet__checkout-btn:active {
+  opacity: 0.85;
+  transform: scale(0.98);
+}

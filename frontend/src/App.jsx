@@ -9,17 +9,22 @@ import ProtectedRoute from './components/shared/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import TableVerifyPage from './pages/customer/TableVerifyPage';
 
+//Customer
+import HomePage from './pages/customer/HomePage';
+import MenuPage from './pages/customer/MenuPage';
+import OrderPage from './pages/customer/OrderPage';
+
+//Admin
+import AdminTablesPage from './pages/admin/AdminTablesPage';
+
 // Pages — placeholder (thay dần bằng page thật)
 import {
-  MenuPage,
-  OrderPage,
   StaffOrderPage,
   StaffTablePage,
   KitchenPage,
   AdminDashboardPage,
   AdminProductPage,
   AdminCategoryPage,
-  AdminTablePage,
   AdminUserPage,
 } from './pages/PlaceholderPage';
 
@@ -34,6 +39,7 @@ export default function App() {
 
         {/* ── Customer (QR) — không cần login ── */}
         <Route path="/table/:token" element={<TableVerifyPage />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/orders" element={<OrderPage />} />
 
@@ -58,7 +64,7 @@ export default function App() {
             <Route path="/admin" element={<AdminDashboardPage />} />
             <Route path="/admin/products" element={<AdminProductPage />} />
             <Route path="/admin/categories" element={<AdminCategoryPage />} />
-            <Route path="/admin/tables" element={<AdminTablePage />} />
+            <Route path="/admin/tables" element={<AdminTablesPage />} />
             <Route path="/admin/users" element={<AdminUserPage />} />
           </Route>
         </Route>

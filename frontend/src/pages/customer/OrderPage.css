@@ -1,0 +1,516 @@
+/* ============================================
+   OrderPage.css — mobile-first
+   ============================================ */
+
+.order-page {
+  min-height: 100dvh;
+  background: #faf7f3;
+  display: flex;
+  flex-direction: column;
+  /* Chừa chỗ cho order-bar cố định + safe area */
+  padding-bottom: calc(148px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ── Header ── */
+.order-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #faf7f3;
+  border-bottom: 1px solid #ede8e0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  /* Safe area top (notch) */
+  padding-top: max(12px, env(safe-area-inset-top, 12px));
+}
+
+.order-header__back-btn {
+  /* Tap target 44×44 */
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #1a1205;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.order-header__back-btn:active {
+  transform: scale(0.88);
+}
+
+.order-header__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-header__title {
+  font-size: 17px;
+  font-weight: 900;
+  color: #1a1205;
+  margin: 0;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.order-header__sub {
+  font-size: 12px;
+  color: #999;
+  font-weight: 500;
+  margin: 2px 0 0;
+}
+
+.order-header__table {
+  color: var(--color-primary, #e07a3a);
+  font-weight: 700;
+}
+
+.order-header__clear-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #f87171;
+  border: none;
+  background: none;
+  cursor: pointer;
+  /* Tap target */
+  padding: 8px 4px;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.order-header__clear-btn:active {
+  opacity: 0.6;
+}
+
+/* ── Empty ── */
+.order-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #bbb;
+  text-align: center;
+  padding: 32px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.order-empty__btn {
+  margin-top: 8px;
+  background: var(--color-primary, #e07a3a);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 13px 28px;
+  min-height: 48px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(224,122,58,0.4);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.order-empty__btn:active {
+  transform: scale(0.96);
+}
+
+/* ── List ── */
+.order-main {
+  padding: 12px 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.order-main__meta {
+  font-size: 11px;
+  color: #aaa;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 2px 4px;
+}
+
+/* ── Order item card ── */
+.order-item {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.06);
+  overflow: hidden;
+  animation: fade-up 0.28s ease both;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.order-item__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px 8px;
+  /* Cực quan trọng: tránh wrap trên màn nhỏ */
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.order-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-item__name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1205;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.order-item__unit-price {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary, #e07a3a);
+  margin: 3px 0 0;
+  white-space: nowrap;
+}
+
+.order-item__per {
+  color: #bbb;
+  font-weight: 400;
+}
+
+/* Qty control */
+.order-item__qty-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f5f0ea;
+  border-radius: 20px;
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+
+.order-item__qty-num {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-primary, #e07a3a);
+  min-width: 18px;
+  text-align: center;
+}
+
+.order-item__qty-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  color: #1a1205;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.order-item__qty-btn--plus {
+  background: var(--color-primary, #e07a3a);
+  color: #fff;
+}
+
+.order-item__qty-btn:active {
+  transform: scale(0.85);
+}
+
+/* Subtotal — chỉ hiện trên màn ≥360px */
+.order-item__subtotal {
+  font-size: 13px;
+  font-weight: 900;
+  color: #1a1205;
+  text-align: right;
+  flex-shrink: 0;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ── Ghi chú ── */
+.order-item__note-wrap {
+  padding: 0 12px 10px;
+}
+
+.order-item__note-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #aaa;
+  font-weight: 500;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px 0;
+  -webkit-tap-highlight-color: transparent;
+  /* Tap target đủ cao */
+  min-height: 32px;
+}
+
+.order-item__note-toggle:active {
+  opacity: 0.6;
+}
+
+.order-item__note-value {
+  color: var(--color-primary, #e07a3a);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.order-item__note-input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  /* Tối thiểu 44px cao */
+  padding: 10px 12px;
+  border: 1.5px solid #e5ddd3;
+  border-radius: 10px;
+  background: #faf7f3;
+  font-size: 14px; /* ≥16px tránh zoom iOS, nhưng 14 vẫn ok với border */
+  color: #1a1205;
+  outline: none;
+  box-sizing: border-box;
+  /* Quan trọng: tránh iOS zoom khi focus nếu font < 16px */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Dùng font-size 16px trong input để iOS không zoom */
+@supports (-webkit-touch-callout: none) {
+  .order-item__note-input {
+    font-size: 16px;
+  }
+}
+
+.order-item__note-input::placeholder {
+  color: #ccc;
+}
+
+.order-item__note-input:focus {
+  border-color: var(--color-primary, #e07a3a);
+}
+
+/* ── Bottom order bar ──
+   Đây là phần hay bị che nhất trên mobile! */
+.order-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+
+  background: #fff;
+  border-top: 1px solid #ede8e0;
+
+  /* padding top bình thường, bottom = safe area */
+  padding: 12px 14px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+}
+
+.order-bar__summary {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.order-bar__label {
+  font-size: 11px;
+  color: #aaa;
+  font-weight: 500;
+  margin: 0 0 2px;
+}
+
+.order-bar__total {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1a1205;
+  letter-spacing: -0.5px;
+  margin: 0;
+  line-height: 1;
+}
+
+.order-bar__qty {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0;
+  padding-bottom: 2px;
+}
+
+.order-bar__submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* Tap target tốt */
+  min-height: 50px;
+  background: var(--color-primary, #e07a3a);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(224,122,58,0.4);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.order-bar__submit-btn:active:not(:disabled) {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.order-bar__submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.order-bar__spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Feedback screens (success / error) ── */
+.order-feedback {
+  min-height: 100dvh;
+  background: #faf7f3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  /* Safe area */
+  padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+  text-align: center;
+}
+
+.order-feedback__icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  animation: icon-pop 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes icon-pop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.order-feedback__icon--success {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.order-feedback__icon--error {
+  background: #fee2e2;
+  color: #f87171;
+}
+
+.order-feedback__title {
+  font-size: 21px;
+  font-weight: 900;
+  color: #1a1205;
+  margin: 0 0 8px;
+  letter-spacing: -0.4px;
+}
+
+.order-feedback__sub {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 6px;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.order-feedback__sub strong {
+  color: var(--color-primary, #e07a3a);
+}
+
+.order-feedback__hint {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0 0 32px;
+}
+
+.order-feedback__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.order-feedback__btn {
+  border-radius: 14px;
+  padding: 0 22px;
+  min-height: 48px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+}
+
+.order-feedback__btn:active {
+  transform: scale(0.95);
+}
+
+.order-feedback__btn--dark {
+  background: #1a1205;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(26,18,5,0.22);
+}
+
+.order-feedback__btn--primary {
+  background: var(--color-primary, #e07a3a);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(224,122,58,0.38);
+}
+
+.order-feedback__btn--outline {
+  background: none;
+  color: #1a1205;
+  border: 2px solid #1a1205 !important;
+} 

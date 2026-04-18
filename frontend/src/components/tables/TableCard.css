@@ -1,0 +1,236 @@
+.table-card {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.15s;
+}
+
+.table-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.table-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.table-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+  flex: 1;
+  word-break: break-word;
+}
+
+.table-card__badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.table-card__badge--available {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.table-card__badge--occupied {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.table-card__badge--inactive {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.table-card__badge--default {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.table-card__token {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  margin: 0 0 0.85rem;
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.table-card__feedback {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.table-card__feedback--error {
+  background: #fee2e2;
+  color: #991b1b;
+  border-left: 4px solid #ef4444;
+}
+
+.table-card__actions,
+.table-card__rename,
+.table-card__confirm-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.table-card__rename {
+  margin-top: 0.5rem;
+}
+
+.table-card__input {
+  flex: 1 1 180px;
+  padding: 0.6rem 0.85rem;
+  min-height: 44px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s;
+  color: #1a1a2e;
+  background: #fff;
+}
+
+.table-card__input:focus {
+  border-color: #4f46e5;
+}
+
+.table-card__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  min-height: 38px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1;
+  transition: opacity 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.table-card__btn:active {
+  transform: scale(0.97);
+}
+
+.table-card__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.table-card__btn--primary {
+  background: #4f46e5;
+  color: #fff;
+}
+
+.table-card__btn--ghost {
+  background: transparent;
+  color: #4f46e5;
+  border: 1.5px solid #4f46e5;
+}
+
+.table-card__btn--warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.table-card__btn--danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.table-card__confirm {
+  background: #fff7ed;
+  border: 1.5px solid #fb923c;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.table-card__confirm-text {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #92400e;
+  font-weight: 500;
+}
+
+.table-card__modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+}
+
+.table-card__modal {
+  position: relative;
+  width: min(100%, 380px);
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 16px 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.table-card__modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: #f3f4f6;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.table-card__modal-title {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.table-card__modal-qr {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.table-card__modal-text {
+  margin: 0 0 10px;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.table-card__modal-link {
+  display: block;
+  word-break: break-all;
+  font-size: 0.82rem;
+  color: #4f46e5;
+  text-decoration: none;
+}

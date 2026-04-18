@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import { FiShoppingCart, FiAlertCircle, FiLoader } from 'react-icons/fi'
 import useCartStore from '../../store/cartStore'
 import useTableStore from '../../store/tableStore'
-import api from '../../api/axios'
+import categoryApi from '../../api/categoryApi'
+import productApi from '../../api/productApi'
 import ProductCard from '../../components/customer/ProductCard'
 import './MenuPage.css'
+import {CustomerBottomNav} from './HomePage'
 
 export default function MenuPage() {
   const navigate = useNavigate()
-  const { tableInfo } = useTableStore()
+  const { tableId, tableName } = useTableStore()
   const { items } = useCartStore()
 
   const [categories, setCategories] = useState([])
@@ -26,25 +28,26 @@ export default function MenuPage() {
 
   // Redirect nếu không có tableInfo
   useEffect(() => {
-    if (!tableInfo) {
+    if (!tableId) {
       navigate('/login', { replace: true })
     }
-  }, [tableInfo, navigate])
+  }, [tableId, navigate])
 
   const fetchData = async () => {
     try {
       setLoading(true)
       const [catRes, proRes] = await Promise.all([
-        api.get('/categories'),
-        api.get('/products'),
+        categoryApi.getAll(),
+        productApi.getAll(),
       ])
+
       const cats = catRes.data
       const pros = proRes.data
       setCategories(cats)
       setProducts(pros)
       if (cats.length > 0) { setActiveCatId(cats[0].id) }
 
-    } catch (err) {
+    } catch {
       setError('Không thể tải menu vui lòng thử lại.')
     } finally {
       setLoading(false)
@@ -79,7 +82,7 @@ export default function MenuPage() {
   }
 
   const getProductsByCategory = (catId) =>
-    products.filter((p) => p.category_id === catId && p.is_available === true)
+    products.filter((p) => p.category_id === catId && p.status === 'available')
 
   const formatPrice = (p) =>
     new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(p)
@@ -113,7 +116,7 @@ export default function MenuPage() {
         <div className='menu-header__iner'>
           <div className="menu-header__table">
             <span className='menu-header__label'>Bàn</span>
-            <span className='menu-header__table-num'>{tableInfo?.table_number??'-'}</span>
+            <span className='menu-header__table-num'>{tableName ?? '-'}</span>
           </div>
           <h1 className='menu-header__title'>Thực đơn</h1>
           <div className='menu-header__spacer'></div>
@@ -169,6 +172,9 @@ export default function MenuPage() {
           <span className="menu-cart-bar__total">{formatPrice(totalPrice)}</span>
         </div>
       )}
+
+      {/* ── Bottom Nav ── */}
+      <CustomerBottomNav active="menu" />
       
     </div>
   )
