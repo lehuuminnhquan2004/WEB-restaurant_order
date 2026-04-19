@@ -13,7 +13,7 @@ const ROLE_REDIRECT = {
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { setAuth, token, user } = useAuthStore()
+  const { setAuth, token, user, isLoggedIn } = useAuthStore()
 
   const [username, setUsername]         = useState('')
   const [password, setPassword]         = useState('')
@@ -21,7 +21,7 @@ export default function LoginPage() {
   const [loading, setLoading]           = useState(false)
   const [error, setError]               = useState('')
 
-  if (token && user) {
+  if (token && user && isLoggedIn) {
     return <Navigate to={ROLE_REDIRECT[user.role] || '/login'} replace />
   }
 

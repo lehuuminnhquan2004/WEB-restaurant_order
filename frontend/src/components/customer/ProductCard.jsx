@@ -4,13 +4,12 @@ import useCartStore from '../../store/cartStore'
 import './ProductCard.css'
 
 export default function ProductCard({ product }) {
-  const { id, name, price, image, description } = product
+  const { id, name, price, image } = product
   const { items, addItem, removeItem } = useCartStore()
   const [imgError, setImgError] = useState(false)
   const [adding, setAdding] = useState(false)
 
-  const cartItem = items.find((i) => i.product_id === id)
-  const qty = cartItem?.quantity ?? 0
+  const qty = items.filter((item) => item.product_id === id).length
 
   const handleAdd = () => {
     setAdding(true)

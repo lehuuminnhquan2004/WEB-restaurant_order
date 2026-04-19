@@ -1,0 +1,192 @@
+.ovm-modal {
+  max-width: 620px;
+}
+
+.ovm-modal--wide {
+  max-width: 980px;
+}
+
+.ovm-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ovm-content__intro {
+  margin-bottom: 1rem;
+}
+
+.ovm-content__title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #111827;
+}
+
+.ovm-modal__subtitle {
+  margin: 0.35rem 0 0;
+  color: #6b7280;
+  font-size: 0.92rem;
+}
+
+.ovm-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.ovm-summary-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
+  background: #fff;
+}
+
+.ovm-summary-card__label,
+.ovm-order-card__total-label {
+  display: block;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.ovm-summary-card strong,
+.ovm-order-card__total-value {
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.ovm-empty {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #d1d5db;
+  border-radius: 14px;
+  background: #fff;
+  color: #6b7280;
+}
+
+.ovm-order-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.ovm-order-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 8px 26px rgba(15, 23, 42, 0.05);
+}
+
+.ovm-order-card__head,
+.ovm-order-card__foot,
+.ovm-order-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ovm-order-card__head,
+.ovm-order-card__foot {
+  align-items: center;
+}
+
+.ovm-order-card__eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+
+.ovm-order-card__title {
+  margin: 0.15rem 0;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.ovm-order-card__meta,
+.ovm-order-item__note {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.88rem;
+}
+
+.ovm-order-item__meta {
+  margin-bottom: 0.25rem;
+  color: #9ca3af;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ovm-status {
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ovm-status--pending { background: #fef3c7; color: #92400e; }
+.ovm-status--confirmed { background: #dbeafe; color: #1d4ed8; }
+.ovm-status--preparing { background: #ede9fe; color: #6d28d9; }
+.ovm-status--done { background: #d1fae5; color: #065f46; }
+.ovm-status--paid { background: #e5e7eb; color: #374151; }
+
+.ovm-order-items {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.ovm-order-item {
+  align-items: flex-start;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.ovm-order-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ovm-order-item__side {
+  display: grid;
+  justify-items: end;
+  gap: 0.2rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ovm-order-item__remove {
+  margin-top: 0.35rem;
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  color: #be123c;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.ovm-order-item__remove:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .ovm-modal__header,
+  .ovm-order-card__head,
+  .ovm-order-card__foot,
+  .ovm-order-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ovm-order-item__side {
+    justify-items: start;
+  }
+}

@@ -26,6 +26,7 @@ const NAV_CONFIG = {
       section: 'Quản lý',
       items: [
         { label: 'Đơn hàng',   icon: <FiList />,       path: '/staff/orders' },
+        { label: 'Phục vụ',    icon: <FiCoffee />,     path: '/staff/serving' },
         { label: 'Bàn',        icon: <MdTableRestaurant />, path: '/staff/tables' },
       ],
     },
@@ -83,6 +84,7 @@ function getInitials(name = '') {
 function getPageTitle(pathname) {
   const map = {
     '/staff/orders':      'Đơn hàng',
+    '/staff/serving':     'Phục vụ món',
     '/staff/tables':      'Quản lý bàn',
     '/kitchen':           'Màn hình bếp',
     '/admin':             'Tổng quan',

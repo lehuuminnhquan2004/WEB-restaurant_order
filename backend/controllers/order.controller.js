@@ -1,12 +1,11 @@
 const db = require('../config/db')
-const crypto = require('crypto')
 
 const createOrder = async (req, res) => {
   try {
     const { table_id, items } = req.body
 
     if (!table_id || !items || items.length === 0) {
-      return res.status(400).json({ message: 'Thiếu thông tin đặt món' })
+      return res.status(400).json({ message: 'Thieu thong tin dat mon' })
     }
 
     const [tables] = await db.query(
@@ -15,70 +14,70 @@ const createOrder = async (req, res) => {
     )
 
     if (tables.length === 0) {
-      return res.status(404).json({ message: 'Không tìm thấy bàn' })
+      return res.status(404).json({ message: 'Khong tim thay ban' })
     }
-    
-    const productIds = items.map((item)=>item.product_id)
-    const [products] = await db.query(`
-      SELECT id, price, status FROM products WHERE id IN (?)`,
+
+    const productIds = items.map((item) => item.product_id)
+    const [products] = await db.query(
+      'SELECT id, price, status FROM products WHERE id IN (?)',
       [productIds]
     )
 
-    const unavailable = products.filter((p)=>p.status==='unavailable')
-    if(unavailable.length>0){
+    const unavailable = products.filter((product) => product.status === 'unavailable')
+    if (unavailable.length > 0) {
       return res.status(400).json({
-        message: 'Một số món không có sẵn',
-        products: unavailable.map((p)=>p.id)
+        message: 'Mot so mon khong co san',
+        products: unavailable.map((product) => product.id),
       })
     }
 
-    const priceMap={}
-    products.forEach((p)=>{
-      priceMap[p.id]=p.price
+    const priceMap = {}
+    products.forEach((product) => {
+      priceMap[product.id] = Number(product.price)
     })
 
-    const total_price = items.reduce((sum,item)=>{
-      const realPrice=priceMap[item.product_id]
-      return sum + realPrice * item.quantity
+    const total_price = items.reduce((sum, item) => {
+      const realPrice = priceMap[item.product_id]
+      return sum + realPrice * Number(item.quantity || 0)
     }, 0)
 
-    const [order] = await db.query(`
-      INSERT INTO orders (table_id, status, total_price) VALUES (?,'pending',?)`,
-      [table_id,total_price]
+    const [order] = await db.query(
+      "INSERT INTO orders (table_id, status, total_price) VALUES (?,'pending',?)",
+      [table_id, total_price]
     )
 
-    const orderId=order.insertId
+    const orderId = order.insertId
 
-    const orderItems = items.map((item)=>[
-      orderId,
-      item.product_id,
-      item.quantity,
-      priceMap[item.product_id],
-      item.note || null,
-      'pending'
-    ])
+    const orderItems = items.flatMap((item) =>
+      Array.from({ length: Number(item.quantity) || 0 }, () => ([
+        orderId,
+        item.product_id,
+        1,
+        priceMap[item.product_id],
+        item.note || null,
+        'pending',
+      ]))
+    )
 
-    await db.query(`
-      INSERT INTO order_items (order_id, product_id, quantity, price, note, status) VALUES ?`,
+    await db.query(
+      'INSERT INTO order_items (order_id, product_id, quantity, price, note, status) VALUES ?',
       [orderItems]
     )
 
     res.status(201).json({
-      message: 'Đặt món thành công',
+      message: 'Dat mon thanh cong',
       orderId,
       total_price,
     })
-  }catch(error){
-    res.status(500).json({ message: 'Lỗi server', error: error.message })
+  } catch (error) {
+    res.status(500).json({ message: 'Loi server', error: error.message })
   }
-
-   
 }
 
 const getOrdersByTable = async (req, res) => {
   try {
     const [orders] = await db.query(
-      `SELECT * FROM orders WHERE table_id = ? AND status != 'paid' ORDER BY created_at DESC`,
+      "SELECT * FROM orders WHERE table_id = ? AND status != 'paid' ORDER BY created_at DESC",
       [req.params.table_id]
     )
 
@@ -86,60 +85,10 @@ const getOrdersByTable = async (req, res) => {
       return res.json([])
     }
 
-    const orderIds = orders.map(order => order.id)
-
-    const [items] = await db.query(
-      `SELECT oi.*, p.name as product_name, p.image
-       FROM order_items oi
-       LEFT JOIN products p ON oi.product_id = p.id
-       WHERE oi.order_id IN (?)`,
-      [orderIds]
-    )
-
-    // Gắn items vào đúng từng đơn hàng
-    const result = orders.map(order => ({
-      ...order,
-      items: items.filter(item => item.order_id === order.id)
-    }))
-
-    res.json(result)
-    
-  } catch (error) {
-    res.status(500).json({ message: 'Lỗi server', error: error.message })
-  }
-}
-
-const getAllOrders = async (req, res) => {
-  try {
-    const { status } = req.query
-
-    const validStatuses = ['pending', 'confirmed', 'preparing', 'done', 'paid']
-
-    let whereClause = ''
-    let params = []
-
-    if (status) {
-      if (!validStatuses.includes(status)) {
-        return res.status(400).json({ message: 'Trạng thái không hợp lệ' })
-      }
-      whereClause = 'WHERE o.status = ?'
-      params = [status]
-    }
-
-    const [orders] = await db.query(`
-      SELECT o.*, t.name as table_name
-      FROM orders o
-      LEFT JOIN tables t ON o.table_id = t.id
-      ${whereClause}
-      ORDER BY o.created_at DESC
-    `, params)
-
-    if (orders.length === 0) return res.json([])
-
     const orderIds = orders.map((order) => order.id)
 
     const [items] = await db.query(
-      `SELECT oi.*, p.name as product_name
+      `SELECT oi.*, p.name AS product_name, p.image
        FROM order_items oi
        LEFT JOIN products p ON oi.product_id = p.id
        WHERE oi.order_id IN (?)`,
@@ -153,7 +102,58 @@ const getAllOrders = async (req, res) => {
 
     res.json(result)
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi server', error: error.message })
+    res.status(500).json({ message: 'Loi server', error: error.message })
+  }
+}
+
+const getAllOrders = async (req, res) => {
+  try {
+    const { status } = req.query
+    const validStatuses = ['pending', 'confirmed', 'preparing', 'done', 'paid']
+
+    let whereClause = ''
+    let params = []
+
+    if (status) {
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({ message: 'Trang thai khong hop le' })
+      }
+
+      whereClause = 'WHERE o.status = ?'
+      params = [status]
+    }
+
+    const [orders] = await db.query(
+      `SELECT o.*, t.name AS table_name
+       FROM orders o
+       LEFT JOIN tables t ON o.table_id = t.id
+       ${whereClause}
+       ORDER BY o.created_at DESC`,
+      params
+    )
+
+    if (orders.length === 0) {
+      return res.json([])
+    }
+
+    const orderIds = orders.map((order) => order.id)
+
+    const [items] = await db.query(
+      `SELECT oi.*, p.name AS product_name
+       FROM order_items oi
+       LEFT JOIN products p ON oi.product_id = p.id
+       WHERE oi.order_id IN (?)`,
+      [orderIds]
+    )
+
+    const result = orders.map((order) => ({
+      ...order,
+      items: items.filter((item) => item.order_id === order.id),
+    }))
+
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ message: 'Loi server', error: error.message })
   }
 }
 
@@ -163,25 +163,40 @@ const updateOrderStatus = async (req, res) => {
     const validStatuses = ['pending', 'confirmed', 'preparing', 'done', 'paid']
 
     if (!validStatuses.includes(status)) {
-      return res.status(400).json({ message: 'Trạng thái không hợp lệ' })
+      return res.status(400).json({ message: 'Trang thai khong hop le' })
     }
 
-    const [result] = await db.query(
+    const [orders] = await db.query(
+      'SELECT id, table_id FROM orders WHERE id = ?',
+      [req.params.id]
+    )
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: 'Khong tim thay order' })
+    }
+
+    const tableId = orders[0].table_id
+
+    if (status === 'paid') {
+      const [items] = await db.query(
+        'SELECT status FROM order_items WHERE order_id = ?',
+        [req.params.id]
+      )
+
+      const allServed = items.length > 0 && items.every((item) => item.status === 'served')
+
+      if (!allServed) {
+        return res.status(400).json({
+          message: 'Chi duoc thanh toan khi tat ca mon da duoc phuc vu',
+        })
+      }
+    }
+
+    await db.query(
       'UPDATE orders SET status = ? WHERE id = ?',
       [status, req.params.id]
     )
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Không tìm thấy order' })
-    }
-
-    const [orders] = await db.query(
-      'SELECT table_id FROM orders WHERE id = ?',
-      [req.params.id]
-    )
-    const tableId = orders[0].table_id
-
-    // ✅ confirm → bàn occupied
     if (status === 'confirmed') {
       await db.query(
         'UPDATE tables SET status = ? WHERE id = ?',
@@ -189,18 +204,23 @@ const updateOrderStatus = async (req, res) => {
       )
     }
 
-    // ✅ paid → bàn available + token mới
     if (status === 'paid') {
-      await db.query(
-        'UPDATE tables SET status = ? WHERE id = ?',
-        ['available', tableId]
+      const [unpaidOrders] = await db.query(
+        "SELECT id FROM orders WHERE table_id = ? AND status != 'paid'",
+        [tableId]
       )
 
+      if (unpaidOrders.length === 0) {
+        await db.query(
+          'UPDATE tables SET status = ? WHERE id = ?',
+          ['available', tableId]
+        )
+      }
     }
 
-    res.json({ message: `Cập nhật trạng thái thành công: ${status}` })
+    res.json({ message: `Cap nhat trang thai thanh cong: ${status}` })
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi server', error: error.message })
+    res.status(500).json({ message: 'Loi server', error: error.message })
   }
 }
 
@@ -209,8 +229,8 @@ const updateOrderItemStatus = async (req, res) => {
     const { status } = req.body
     const { id, item_id } = req.params
 
-    if (!['pending', 'done'].includes(status)) {
-      return res.status(400).json({ message: 'Trạng thái không hợp lệ' })
+    if (!['pending', 'done', 'served'].includes(status)) {
+      return res.status(400).json({ message: 'Trang thai khong hop le' })
     }
 
     const [result] = await db.query(
@@ -219,16 +239,16 @@ const updateOrderItemStatus = async (req, res) => {
     )
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Không tìm thấy món' })
+      return res.status(404).json({ message: 'Khong tim thay mon' })
     }
 
     if (status === 'done') {
       const [items] = await db.query(
-        `SELECT status FROM order_items WHERE order_id = ?`,
+        'SELECT status FROM order_items WHERE order_id = ?',
         [id]
       )
 
-      const allDone = items.every((item) => item.status === 'done')
+      const allDone = items.every((item) => ['done', 'served'].includes(item.status))
 
       if (allDone) {
         await db.query(
@@ -238,9 +258,25 @@ const updateOrderItemStatus = async (req, res) => {
       }
     }
 
-    res.json({ message: 'Cập nhật trạng thái món thành công' })
+    if (status === 'served') {
+      const [items] = await db.query(
+        'SELECT status FROM order_items WHERE order_id = ?',
+        [id]
+      )
+
+      const allServed = items.every((item) => item.status === 'served')
+
+      if (allServed) {
+        await db.query(
+          'UPDATE orders SET status = ? WHERE id = ?',
+          ['done', id]
+        )
+      }
+    }
+
+    res.json({ message: 'Cap nhat trang thai mon thanh cong' })
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi server', error: error.message })
+    res.status(500).json({ message: 'Loi server', error: error.message })
   }
 }
 
@@ -254,12 +290,12 @@ const removeOrderItem = async (req, res) => {
     )
 
     if (orders.length === 0) {
-      return res.status(404).json({ message: 'Không tìm thấy order' })
+      return res.status(404).json({ message: 'Khong tim thay order' })
     }
 
     if (['preparing', 'done', 'paid'].includes(orders[0].status)) {
       return res.status(400).json({
-        message: 'Không thể xóa món đã bắt đầu chế biến',
+        message: 'Khong the xoa mon da bat dau che bien',
       })
     }
 
@@ -269,7 +305,7 @@ const removeOrderItem = async (req, res) => {
     )
 
     if (items.length === 0) {
-      return res.status(404).json({ message: 'Không tìm thấy món' })
+      return res.status(404).json({ message: 'Khong tim thay mon' })
     }
 
     await db.query(
@@ -284,11 +320,12 @@ const removeOrderItem = async (req, res) => {
 
     if (remaining.length === 0) {
       await db.query('DELETE FROM orders WHERE id = ?', [id])
-      return res.json({ message: 'Đã xóa món và hủy order vì không còn món nào' })
+      return res.json({ message: 'Da xoa mon va huy order vi khong con mon nao' })
     }
 
     const newTotal = remaining.reduce(
-      (sum, item) => sum + item.price * item.quantity, 0
+      (sum, item) => sum + Number(item.price) * Number(item.quantity),
+      0
     )
 
     await db.query(
@@ -296,9 +333,9 @@ const removeOrderItem = async (req, res) => {
       [newTotal, id]
     )
 
-    res.json({ message: 'Xóa món thành công', total_price: newTotal })
+    res.json({ message: 'Xoa mon thanh cong', total_price: newTotal })
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi server', error: error.message })
+    res.status(500).json({ message: 'Loi server', error: error.message })
   }
 }
 

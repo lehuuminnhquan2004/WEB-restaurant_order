@@ -136,6 +136,10 @@
   gap: 8px;
 }
 
+.order-orders-view {
+  padding: 12px;
+}
+
 .order-main__meta {
   font-size: 11px;
   color: #aaa;

@@ -1,72 +1,58 @@
-import {create} from 'zustand'
+import { create } from 'zustand'
 
-const useCartStore=create((set,get)=>({
-    items:[],
+function createCartItem(product) {
+  return {
+    cart_item_id: `${product.id}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    product_id: product.id,
+    name: product.name,
+    price: product.price,
+    quantity: 1,
+    note: '',
+  }
+}
 
-    addItem: (product)=>{
-        const items=get().items
-        const existing=items.find((i)=>i.product_id===product.id)
+const useCartStore = create((set, get) => ({
+  items: [],
 
-        if(existing){
-            set({
-                items: items.map((i)=>
-                i.product_id===product.id
-                ? {...i,quantity: i.quantity+1}
-                :i
-                ),
-            })
-        }else{
-            set({
-                items: [
-                    ...items,
-                    {
-                        product_id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        quantity: 1,
-                        note:'',
-                    },
-                ],
-            })
-        }
-    },
+  addItem: (product) => {
+    set({
+      items: [...get().items, createCartItem(product)],
+    })
+  },
 
-    removeItem: (product_id)=>{
-        const items=get().items
-        const existing = items.find((i)=>i.product_id===product_id)
+  removeItem: (product_id) => {
+    const items = get().items
+    const lastIndex = items.map((item) => item.product_id).lastIndexOf(product_id)
 
-        if(!existing) return
+    if (lastIndex === -1) return
 
-        if(existing.quantity===1){
-            set({items: items.filter((i)=>i.product_id!==product_id) })
-        }else{
-            set({
-                items: items.map((i)=>
-                i.product_id===product_id ? {...i,quantity: i.quantity-1}:i
-                ),
-            })
-        }
-    },
+    set({
+      items: items.filter((_, index) => index !== lastIndex),
+    })
+  },
 
-    deleteItem: (product_id)=>{
-        set({items:get().items.filter((i)=>i.product_id!==product_id)})
-    },
+  deleteItem: (cart_item_id) => {
+    set({
+      items: get().items.filter((item) => item.cart_item_id !== cart_item_id),
+    })
+  },
 
-    updateNote: (product_id,note)=>{
-        set({
-            items:get().items.map((i)=>
-            i.product_id===product_id ? {...i,note}:i),
-        })
-    },
+  updateNote: (cart_item_id, note) => {
+    set({
+      items: get().items.map((item) =>
+        item.cart_item_id === cart_item_id ? { ...item, note } : item
+      ),
+    })
+  },
 
-    updateNode: (product_id,note)=>{
-        get().updateNote(product_id, note)
-    },
+  updateNode: (cart_item_id, note) => {
+    get().updateNote(cart_item_id, note)
+  },
 
-    clearCart: () => set({ items: [] }),
+  clearCart: () => set({ items: [] }),
 
-    totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
-    totalPrice: () => get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+  totalItems: () => get().items.length,
+  totalPrice: () => get().items.reduce((sum, item) => sum + item.price, 0),
 }))
 
 export default useCartStore

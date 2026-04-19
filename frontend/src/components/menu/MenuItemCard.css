@@ -1,0 +1,171 @@
+/* ============================================
+   MenuItemCard.css — shared, mobile-first
+   ============================================ */
+
+.mic {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.18s, transform 0.15s;
+  position: relative;
+}
+.mic:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.10); }
+
+/* ── unavailable overlay ── */
+.mic--unavailable { opacity: 0.55; }
+.mic--unavailable::after {
+  content: "Hết món";
+  position: absolute;
+  top: 10px; right: 10px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── image placeholder ── */
+.mic__img-wrap {
+  height: 130px;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.6rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.mic__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mic__img-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── body ── */
+.mic__body {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.mic__name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.mic__category {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.mic__price {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #f97316;
+  margin-top: auto;
+  padding-top: 0.35rem;
+}
+
+/* ── footer actions ── */
+.mic__footer {
+  padding: 0.6rem 0.75rem;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* ── add-to-order mode: quantity control ── */
+.mic__qty {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.mic__qty-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #4f46e5;
+  background: #fff;
+  color: #4f46e5;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s;
+  flex-shrink: 0;
+}
+.mic__qty-btn:hover { background: #eef2ff; }
+.mic__qty-btn:active { transform: scale(0.93); }
+
+.mic__qty-num {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  min-width: 24px;
+  text-align: center;
+}
+
+.mic__qty-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-left: auto;
+}
+
+/* in-cart highlight */
+.mic--in-cart {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px #c7d2fe;
+}
+
+/* ── btn reuse (same as global but self-contained) ── */
+.mic-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.7rem;
+  min-height: 36px;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.mic-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.mic-btn--ghost  { background: #f3f4f6; color: #374151; }
+.mic-btn--ghost:hover:not(:disabled) { background: #e5e7eb; }
+.mic-btn--danger { background: #fee2e2; color: #b91c1c; }
+.mic-btn--danger:hover:not(:disabled) { background: #fecaca; }
+.mic-btn--toggle-on  { background: #d1fae5; color: #065f46; }
+.mic-btn--toggle-off { background: #f3f4f6; color: #6b7280; }

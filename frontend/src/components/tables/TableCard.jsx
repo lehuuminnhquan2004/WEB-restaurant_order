@@ -38,6 +38,7 @@ export default function TableCard({
   allowReset = true,
   allowDelete = true,
   allowShowQr = true,
+  extraActions = null,
 }) {
   const [renaming, setRenaming] = useState(false)
   const [newName, setNewName] = useState(table.name ?? '')
@@ -251,6 +252,8 @@ export default function TableCard({
                 Xem QR
               </button>
             )}
+
+            {extraActions}
           </div>
         )}
 

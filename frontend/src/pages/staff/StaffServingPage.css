@@ -1,0 +1,98 @@
+.ssp-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.ssp-card {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 1rem;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 8px 26px rgba(15, 23, 42, 0.05);
+}
+
+.ssp-card__queue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ecfeff, #cffafe);
+  border-radius: 14px;
+  color: #0f766e;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.ssp-card__main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ssp-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ssp-card__eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+
+.ssp-card__title {
+  margin: 0.15rem 0;
+  font-size: 1.15rem;
+  color: #111827;
+}
+
+.ssp-card__meta {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.88rem;
+}
+
+.ssp-card__details {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: #374151;
+  font-size: 0.92rem;
+}
+
+.ssp-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ssp-badge {
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: #dcfce7;
+  color: #166534;
+}
+
+@media (max-width: 640px) {
+  .ssp-card {
+    grid-template-columns: 1fr;
+  }
+
+  .ssp-card__queue {
+    min-height: 48px;
+  }
+
+  .ssp-card__top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

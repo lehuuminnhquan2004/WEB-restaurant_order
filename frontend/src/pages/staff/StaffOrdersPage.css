@@ -1,0 +1,115 @@
+.sp-order-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.sp-order-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 8px 26px rgba(15, 23, 42, 0.05);
+}
+
+.sp-order-card__head,
+.sp-order-card__foot,
+.sp-order-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sp-order-card__head,
+.sp-order-card__foot {
+  align-items: center;
+}
+
+.sp-order-card__eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+
+.sp-order-card__title {
+  margin: 0.15rem 0;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.sp-order-card__meta,
+.sp-order-item__note {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.88rem;
+}
+
+.sp-status {
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sp-status--pending { background: #fef3c7; color: #92400e; }
+.sp-status--confirmed { background: #dbeafe; color: #1d4ed8; }
+.sp-status--preparing { background: #ede9fe; color: #6d28d9; }
+.sp-status--done { background: #d1fae5; color: #065f46; }
+.sp-status--paid { background: #e5e7eb; color: #374151; }
+
+.sp-order-items {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.sp-order-item {
+  align-items: flex-start;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.sp-order-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.sp-order-item__side {
+  display: grid;
+  justify-items: end;
+  gap: 0.2rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sp-order-card__total-label {
+  display: block;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.sp-order-card__total-value {
+  font-size: 1.05rem;
+  color: #111827;
+}
+
+.sp-order-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .sp-order-card__head,
+  .sp-order-card__foot,
+  .sp-order-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sp-order-item__side {
+    justify-items: start;
+    margin-left: 0;
+  }
+}

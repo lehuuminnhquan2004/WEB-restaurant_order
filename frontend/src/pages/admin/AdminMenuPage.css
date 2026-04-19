@@ -1,0 +1,168 @@
+/* ============================================
+   AdminMenuPage.css — mobile-first
+   ============================================ */
+
+.amp-page { padding: 1rem; max-width: 1100px; margin: 0 auto; }
+
+/* header */
+.amp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.amp-title { font-size: 1.4rem; font-weight: 700; margin: 0; color: #1a1a2e; }
+
+.amp-toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+/* feedback */
+.amp-feedback {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.amp-feedback--error   { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+.amp-feedback--success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+
+/* ── Modal overlay ── */
+.amp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: flex-end;   /* slide up from bottom on mobile */
+  justify-content: center;
+  z-index: 130;
+  padding: 0 0 calc(var(--mobile-bottom-clearance) + 12px);
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.amp-modal {
+  background: #fff;
+  border-radius: 18px 18px 0 0;
+  padding: 1.5rem 1.25rem;
+  width: 100%;
+  max-width: 520px;
+  animation: slideUp 0.22s ease;
+  max-height: calc(100vh - var(--mobile-bottom-clearance) - 24px);
+  overflow-y: auto;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(60px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.amp-modal__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 1.1rem;
+  color: #1a1a2e;
+}
+
+/* ── Form ── */
+.amp-form { display: flex; flex-direction: column; gap: 0.85rem; }
+
+.amp-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.amp-input, .amp-select {
+  padding: 0.6rem 0.8rem;
+  min-height: 44px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s;
+  background: #fff;
+  color: #1a1a2e;
+}
+.amp-input:focus, .amp-select:focus { border-color: #4f46e5; }
+
+.amp-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+.amp-toggle-label { font-size: 0.9rem; font-weight: 600; color: #374151; }
+
+/* toggle switch */
+.amp-toggle {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+}
+.amp-toggle input { opacity: 0; width: 0; height: 0; }
+.amp-toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #d1d5db;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.amp-toggle-slider::before {
+  content: "";
+  position: absolute;
+  width: 20px; height: 20px;
+  left: 3px; top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.amp-toggle input:checked + .amp-toggle-slider { background: #4f46e5; }
+.amp-toggle input:checked + .amp-toggle-slider::before { transform: translateX(20px); }
+
+.amp-modal__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ── Confirm delete ── */
+.amp-confirm {
+  background: #fff7ed;
+  border: 1.5px solid #fb923c;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.amp-confirm p { margin: 0; font-size: 0.95rem; color: #92400e; }
+.amp-confirm__actions { display: flex; gap: 0.5rem; }
+
+/* ── shared btn (self-contained) ── */
+.btn { /* đã khai báo global trong AdminTablesPage.css, dùng lại */ }
+
+/* responsive */
+@media (min-width: 640px) {
+  .amp-page { padding: 1.5rem; }
+  .amp-title { font-size: 1.6rem; }
+  .amp-modal {
+    border-radius: 16px;
+    align-self: center;
+    margin: auto;
+    max-height: 90vh;
+  }
+  .amp-modal-backdrop {
+    align-items: center;
+    padding: 16px;
+  }
+}
