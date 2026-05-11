@@ -8,7 +8,7 @@ function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    'Khong the xu ly yeu cau.'
+    'Không thể xử lý yêu cầu.'
   )
 }
 
@@ -84,7 +84,7 @@ export default function StaffServingPage() {
 
     try {
       await orderApi.updateItemStatus(item.order_id, item.id, 'served')
-      setSuccess(`Da phuc vu mon "${item.product_name}" cho ${item.table_name}.`)
+      setSuccess(`Đã phục vụ món "${item.product_name}" cho ${item.table_name}.`)
       await fetchServingOrders()
     } catch (updateError) {
       setError(getErrorMessage(updateError))
@@ -97,12 +97,12 @@ export default function StaffServingPage() {
     <div className="sp-page">
       <div className="sp-header">
         <div>
-          <h1 className="sp-title">Phuc vu mon</h1>
-          <p className="sp-subtitle">Hien thi cac mon da nau xong va can dua len ban.</p>
+          <h1 className="sp-title">Phục vụ món</h1>
+          <p className="sp-subtitle">Hiển thị các món đã nấu xong và cần đưa lên bàn.</p>
         </div>
 
         <button className="btn btn-ghost" onClick={fetchServingOrders} disabled={loading}>
-          {loading ? 'Dang tai...' : 'Lam moi'}
+          {loading ? 'Đang tải...' : 'Làm mới'}
         </button>
       </div>
 
@@ -110,9 +110,9 @@ export default function StaffServingPage() {
       {success && <div className="amp-feedback amp-feedback--success">{success}</div>}
 
       {loading ? (
-        <div className="sp-empty">Dang tai cac mon can phuc vu...</div>
+        <div className="sp-empty">Đang tải các món cần phục vụ...</div>
       ) : servingItems.length === 0 ? (
-        <div className="sp-empty">Khong co mon nao dang cho phuc vu.</div>
+        <div className="sp-empty">Không có món nào đang chờ phục vụ.</div>
       ) : (
         <div className="ssp-list">
           {servingItems.map((item, index) => {
@@ -126,18 +126,18 @@ export default function StaffServingPage() {
                   <div className="ssp-card__top">
                     <div>
                       <div className="ssp-card__eyebrow">
-                        {item.table_name} • Don #{item.order_id}
+                        {item.table_name} • Đơn #{item.order_id}
                       </div>
                       <h2 className="ssp-card__title">{item.product_name}</h2>
-                      <p className="ssp-card__meta">Xong luc {formatTime(item.created_at)}</p>
+                      <p className="ssp-card__meta">Xong lúc {formatTime(item.created_at)}</p>
                     </div>
 
-                    <div className="ssp-badge">Can phuc vu</div>
+                    <div className="ssp-badge">Cần phục vụ</div>
                   </div>
 
                   <div className="ssp-card__details">
-                    <span>So luong: <strong>x{item.quantity}</strong></span>
-                    {item.note && <span>Ghi chu: <strong>{item.note}</strong></span>}
+                    <span>Số lượng: <strong>x{item.quantity}</strong></span>
+                    {item.note && <span>Ghi chú: <strong>{item.note}</strong></span>}
                   </div>
 
                   <div className="ssp-card__actions">
@@ -146,7 +146,7 @@ export default function StaffServingPage() {
                       onClick={() => handleMarkServed(item)}
                       disabled={actingKey === itemKey}
                     >
-                      {actingKey === itemKey ? 'Dang cap nhat...' : 'Da phuc vu'}
+                      {actingKey === itemKey ? 'Đang cập nhật...' : 'Đã phục vụ'}
                     </button>
                   </div>
                 </div>

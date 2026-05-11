@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import orderApi from '../../api/orderApi'
+import socket from '../../api/socket'
 import '../admin/AdminMenuPage.css'
 import './KitchenPage.css'
 
@@ -7,7 +8,7 @@ function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    'Khong the xu ly yeu cau.'
+    'Không thể xử lý yêu cầu.'
   )
 }
 
@@ -67,10 +68,21 @@ export default function KitchenPage() {
     fetchKitchenOrders();
   }, [fetchKitchenOrders])
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(fetchKitchenOrders, 3000)
-  //   return () => clearInterval(intervalId)
-  // }, [fetchKitchenOrders])
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect()
+    }
+
+    function handleOrdersChanged() {
+      fetchKitchenOrders()
+    }
+
+    socket.on('orders:changed', handleOrdersChanged)
+
+    return () => {
+      socket.off('orders:changed', handleOrdersChanged)
+    }
+  }, [fetchKitchenOrders])
 
 
   useEffect(() => {
@@ -89,7 +101,7 @@ export default function KitchenPage() {
 
     try {
       await orderApi.updateStatus(item.order_id, 'preparing')
-      setSuccess(`Da chuyen don #${item.order_id} sang dang nau.`)
+      setSuccess(`Đã chuyển đơn #${item.order_id} sang đang nấu.`)
       await fetchKitchenOrders()
     } catch (updateError) {
       setError(getErrorMessage(updateError))
@@ -105,7 +117,7 @@ export default function KitchenPage() {
 
     try {
       await orderApi.updateItemStatus(item.order_id, item.id, 'done')
-      setSuccess(`Da hoan thanh mon "${item.product_name}".`)
+      setSuccess(`Đã hoàn thành món "${item.product_name}".`)
       await fetchKitchenOrders()
     } catch (updateError) {
       setError(getErrorMessage(updateError))
@@ -118,12 +130,12 @@ export default function KitchenPage() {
     <div className="kp-page">
       <div className="kp-header">
         <div>
-          <h1 className="kp-title">Man hinh bep</h1>
-          <p className="kp-subtitle">Hien thi tung mon chua nau theo thu tu don cu den moi.</p>
+          <h1 className="kp-title">Màn hình bếp</h1>
+          <p className="kp-subtitle">Hiển thị từng món chưa nấu theo thứ tự đơn cũ đến mới.</p>
         </div>
 
         <button className="btn btn-ghost" onClick={fetchKitchenOrders} disabled={loading}>
-          {loading ? 'Dang tai...' : 'Lam moi'}
+          {loading ? 'Đang tải...' : 'Làm mới'}
         </button>
       </div>
 
@@ -132,19 +144,19 @@ export default function KitchenPage() {
 
       <div className="kp-summary">
         <div className="kp-summary__card">
-          <span>Don trong bep</span>
+          <span>Đơn trong bếp</span>
           <strong>{orders.length}</strong>
         </div>
         <div className="kp-summary__card">
-          <span>Mon can lam</span>
+          <span>Món cần làm</span>
           <strong>{kitchenItems.length}</strong>
         </div>
       </div>
 
       {loading ? (
-        <div className="kp-empty">Dang tai danh sach mon...</div>
+        <div className="kp-empty">Đang tải danh sách món...</div>
       ) : kitchenItems.length === 0 ? (
-        <div className="kp-empty">Khong co mon nao dang cho bep xu ly.</div>
+        <div className="kp-empty">Không có món nào đang chờ bếp xử lý.</div>
       ) : (
         <div className="kp-list">
           {kitchenItems.map((item, index) => {
@@ -160,10 +172,10 @@ export default function KitchenPage() {
                   <div className="kp-card__top">
                     <div>
                       <div className="kp-card__eyebrow">
-                        Don #{item.order_id} • {item.table_name}
+                        Đơn #{item.order_id} • {item.table_name}
                       </div>
                       <h2 className="kp-card__title">{item.product_name}</h2>
-                      <p className="kp-card__meta">Nhan luc {formatTime(item.created_at)}</p>
+                      <p className="kp-card__meta">Nhận lúc {formatTime(item.created_at)}</p>
                     </div>
 
                     <div className={`kp-status kp-status--${item.order_status}`}>
@@ -172,8 +184,8 @@ export default function KitchenPage() {
                   </div>
 
                   <div className="kp-card__details">
-                    <span>So luong: <strong>x{item.quantity}</strong></span>
-                    {item.note && <span>Ghi chu: <strong>{item.note}</strong></span>}
+                    <span>Số lượng: <strong>x{item.quantity}</strong></span>
+                    {item.note && <span>Ghi chú: <strong>{item.note}</strong></span>}
                   </div>
 
                   <div className="kp-card__actions">
@@ -182,7 +194,7 @@ export default function KitchenPage() {
                       onClick={() => handleStartCooking(item)}
                       disabled={!isConfirmed || acting === startKey}
                     >
-                      {acting === startKey ? 'Dang cap nhat...' : 'Dang nau'}
+                      {acting === startKey ? 'Đang cập nhật...' : 'Đang nấu'}
                     </button>
 
                     <button
@@ -190,7 +202,7 @@ export default function KitchenPage() {
                       onClick={() => handleFinishItem(item)}
                       disabled={isConfirmed || acting === doneKey}
                     >
-                      {acting === doneKey ? 'Dang cap nhat...' : 'Hoan thanh mon'}
+                      {acting === doneKey ? 'Đang cập nhật...' : 'Hoàn thành món'}
                     </button>
                   </div>
                 </div>

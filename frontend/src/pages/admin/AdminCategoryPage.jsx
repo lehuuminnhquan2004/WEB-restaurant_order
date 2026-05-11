@@ -8,7 +8,7 @@ function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    'Khong the xu ly yeu cau.'
+    'Không thể xử lý yêu cầu.'
   )
 }
 
@@ -33,17 +33,17 @@ function CategoryFormModal({ initial, onSave, onClose, saving }) {
     <div className="amp-modal-backdrop" onClick={(event) => event.target === event.currentTarget && onClose()}>
       <div className="amp-modal">
         <h2 className="amp-modal__title">
-          {initial?.id ? 'Chinh sua danh muc' : 'Them danh muc moi'}
+          {initial?.id ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới'}
         </h2>
 
         <div className="amp-form">
           <label className="amp-label">
-            Ten danh muc *
+            Tên danh mục *
             <input
               className="amp-input"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="VD: Mon chinh"
+              placeholder="VD: Món chính"
               autoFocus
               disabled={saving}
             />
@@ -52,9 +52,9 @@ function CategoryFormModal({ initial, onSave, onClose, saving }) {
 
         <div className="amp-modal__actions" style={{ marginTop: '1rem' }}>
           <Btn onClick={handleSubmit} disabled={saving || !name.trim()}>
-            {saving ? 'Dang luu...' : 'Luu'}
+            {saving ? 'Đang lưu...' : 'Lưu'}
           </Btn>
-          <Btn variant="ghost" onClick={onClose} disabled={saving}>Huy</Btn>
+          <Btn variant="ghost" onClick={onClose} disabled={saving}>Huỷ</Btn>
         </div>
       </div>
     </div>
@@ -66,15 +66,15 @@ function ConfirmDeleteModal({ item, onConfirm, onClose, busy }) {
     <div className="amp-modal-backdrop" onClick={(event) => event.target === event.currentTarget && onClose()}>
       <div className="amp-modal">
         <div className="amp-confirm">
-          <p>Xac nhan xoa danh muc <strong>"{item.name}"</strong>?</p>
+          <p>Xác nhận xoá danh mục <strong>"{item.name}"</strong>?</p>
           <p style={{ fontSize: '0.82rem', color: '#b45309' }}>
-            Hanh dong nay khong the hoan tac.
+            Hành động này không thể hoàn tác.
           </p>
           <div className="amp-confirm__actions">
             <Btn variant="danger" onClick={onConfirm} disabled={busy}>
-              {busy ? 'Dang xoa...' : 'Xoa'}
+              {busy ? 'Đang xoá...' : 'Xoá'}
             </Btn>
-            <Btn variant="ghost" onClick={onClose} disabled={busy}>Huy</Btn>
+            <Btn variant="ghost" onClick={onClose} disabled={busy}>Huỷ</Btn>
           </div>
         </div>
       </div>
@@ -145,25 +145,25 @@ export default function AdminCategoryPage() {
     const item = modal?.item
 
     if (item?.id) {
-      withSave(`Da cap nhat "${formData.name}".`, () => categoryApi.update(item.id, formData))
+      withSave(`Đã cập nhật "${formData.name}".`, () => categoryApi.update(item.id, formData))
       return
     }
 
-    withSave(`Da them "${formData.name}".`, () => categoryApi.create(formData))
+    withSave(`Đã thêm "${formData.name}".`, () => categoryApi.create(formData))
   }
 
   function handleDeleteConfirm() {
     const item = modal?.item
-    withSave(`Da xoa "${item.name}".`, () => categoryApi.delete(item.id))
+    withSave(`Đã xoá "${item.name}".`, () => categoryApi.delete(item.id))
   }
 
   return (
     <div className="amp-page">
       <div className="amp-header">
-        <h1 className="amp-title">Quan ly danh muc</h1>
+        <h1 className="amp-title">Quản lý danh mục</h1>
         <div className="amp-toolbar">
-          <Btn variant="ghost" onClick={fetchCategories} disabled={loading}>Lam moi</Btn>
-          <Btn onClick={() => setModal({ type: 'form', item: null })}>+ Them danh muc</Btn>
+          <Btn variant="ghost" onClick={fetchCategories} disabled={loading}>Làm mới</Btn>
+          <Btn onClick={() => setModal({ type: 'form', item: null })}>+ Thêm danh mục</Btn>
         </div>
       </div>
 
@@ -182,12 +182,12 @@ export default function AdminCategoryPage() {
       {loading ? (
         <div className="mig__empty">
           <div className="mig__empty-icon">...</div>
-          <p>Dang tai danh sach danh muc...</p>
+          <p>Đang tải danh sách danh mục...</p>
         </div>
       ) : filteredCategories.length === 0 ? (
         <div className="mig__empty">
           <div className="mig__empty-icon">#</div>
-          <p>Khong tim thay danh muc nao.</p>
+          <p>Không tìm thấy danh mục nào.</p>
         </div>
       ) : (
         <div className="atp-grid">
@@ -205,13 +205,13 @@ export default function AdminCategoryPage() {
                   className="table-card__btn table-card__btn--ghost"
                   onClick={() => setModal({ type: 'form', item: category })}
                 >
-                  Sua
+                  Sửa
                 </button>
                 <button
                   className="table-card__btn table-card__btn--danger"
                   onClick={() => setModal({ type: 'delete', item: category })}
                 >
-                  Xoa
+                  Xoá
                 </button>
               </div>
             </div>

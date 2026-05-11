@@ -11,10 +11,10 @@ const pool = mysql2.createPool({
 
 pool.getConnection((err, connection)=>{
     if(err){
-        console.error('Ket noi database that bai',err.message)
+        console.error('Kết nối database thất bại',err.message)
         return
     }
-    console.log('Ket noi database thanh cong')
+    console.log('Kết nối database thành công')
     connection.release()
 })
 

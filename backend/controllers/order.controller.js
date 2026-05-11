@@ -1,11 +1,13 @@
 const db = require('../config/db')
+const { emitOrdersChanged } = require('../config/socket')
+const { clearChatByTable } = require('./chat.controller')
 
 const createOrder = async (req, res) => {
   try {
     const { table_id, items } = req.body
 
     if (!table_id || !items || items.length === 0) {
-      return res.status(400).json({ message: 'Thieu thong tin dat mon' })
+      return res.status(400).json({ message: 'Thiếu thông tin đặt món' })
     }
 
     const [tables] = await db.query(
@@ -14,7 +16,7 @@ const createOrder = async (req, res) => {
     )
 
     if (tables.length === 0) {
-      return res.status(404).json({ message: 'Khong tim thay ban' })
+      return res.status(404).json({ message: 'Không tìm thấy bàn' })
     }
 
     const productIds = items.map((item) => item.product_id)
@@ -26,7 +28,7 @@ const createOrder = async (req, res) => {
     const unavailable = products.filter((product) => product.status === 'unavailable')
     if (unavailable.length > 0) {
       return res.status(400).json({
-        message: 'Mot so mon khong co san',
+        message: 'Một số món không có sẵn',
         products: unavailable.map((product) => product.id),
       })
     }
@@ -65,12 +67,19 @@ const createOrder = async (req, res) => {
     )
 
     res.status(201).json({
-      message: 'Dat mon thanh cong',
+      message: 'Đặt món thành công',
       orderId,
       total_price,
     })
+
+    emitOrdersChanged({
+      type: 'created',
+      orderId,
+      tableId: table_id,
+      status: 'pending',
+    })
   } catch (error) {
-    res.status(500).json({ message: 'Loi server', error: error.message })
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
 }
 
@@ -102,7 +111,7 @@ const getOrdersByTable = async (req, res) => {
 
     res.json(result)
   } catch (error) {
-    res.status(500).json({ message: 'Loi server', error: error.message })
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
 }
 
@@ -116,7 +125,7 @@ const getAllOrders = async (req, res) => {
 
     if (status) {
       if (!validStatuses.includes(status)) {
-        return res.status(400).json({ message: 'Trang thai khong hop le' })
+        return res.status(400).json({ message: 'Trạng thái không hợp lệ' })
       }
 
       whereClause = 'WHERE o.status = ?'
@@ -153,7 +162,7 @@ const getAllOrders = async (req, res) => {
 
     res.json(result)
   } catch (error) {
-    res.status(500).json({ message: 'Loi server', error: error.message })
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
 }
 
@@ -163,7 +172,7 @@ const updateOrderStatus = async (req, res) => {
     const validStatuses = ['pending', 'confirmed', 'preparing', 'done', 'paid']
 
     if (!validStatuses.includes(status)) {
-      return res.status(400).json({ message: 'Trang thai khong hop le' })
+      return res.status(400).json({ message: 'Trạng thái không hợp lệ' })
     }
 
     const [orders] = await db.query(
@@ -172,7 +181,7 @@ const updateOrderStatus = async (req, res) => {
     )
 
     if (orders.length === 0) {
-      return res.status(404).json({ message: 'Khong tim thay order' })
+      return res.status(404).json({ message: 'Không tìm thấy order' })
     }
 
     const tableId = orders[0].table_id
@@ -187,7 +196,7 @@ const updateOrderStatus = async (req, res) => {
 
       if (!allServed) {
         return res.status(400).json({
-          message: 'Chi duoc thanh toan khi tat ca mon da duoc phuc vu',
+          message: 'Chỉ được thanh toán khi tất cả món đã được phục vụ',
         })
       }
     }
@@ -215,12 +224,20 @@ const updateOrderStatus = async (req, res) => {
           'UPDATE tables SET status = ? WHERE id = ?',
           ['available', tableId]
         )
+        await clearChatByTable(tableId)
       }
     }
 
-    res.json({ message: `Cap nhat trang thai thanh cong: ${status}` })
+    res.json({ message: `Cập nhật trạng thái thành công: ${status}` })
+
+    emitOrdersChanged({
+      type: 'order-status-updated',
+      orderId: Number(req.params.id),
+      tableId,
+      status,
+    })
   } catch (error) {
-    res.status(500).json({ message: 'Loi server', error: error.message })
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
 }
 
@@ -230,7 +247,7 @@ const updateOrderItemStatus = async (req, res) => {
     const { id, item_id } = req.params
 
     if (!['pending', 'done', 'served'].includes(status)) {
-      return res.status(400).json({ message: 'Trang thai khong hop le' })
+      return res.status(400).json({ message: 'Trạng thái không hợp lệ' })
     }
 
     const [result] = await db.query(
@@ -239,7 +256,7 @@ const updateOrderItemStatus = async (req, res) => {
     )
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Khong tim thay mon' })
+      return res.status(404).json({ message: 'Không tìm thấy món' })
     }
 
     if (status === 'done') {
@@ -274,9 +291,16 @@ const updateOrderItemStatus = async (req, res) => {
       }
     }
 
-    res.json({ message: 'Cap nhat trang thai mon thanh cong' })
+    res.json({ message: 'Cập nhật trạng thái món thành công' })
+
+    emitOrdersChanged({
+      type: 'item-status-updated',
+      orderId: Number(id),
+      itemId: Number(item_id),
+      status,
+    })
   } catch (error) {
-    res.status(500).json({ message: 'Loi server', error: error.message })
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
 }
 
@@ -290,12 +314,12 @@ const removeOrderItem = async (req, res) => {
     )
 
     if (orders.length === 0) {
-      return res.status(404).json({ message: 'Khong tim thay order' })
+      return res.status(404).json({ message: 'Không tìm thấy order' })
     }
 
     if (['preparing', 'done', 'paid'].includes(orders[0].status)) {
       return res.status(400).json({
-        message: 'Khong the xoa mon da bat dau che bien',
+        message: 'Không thể xoá món đã bắt đầu chế biến',
       })
     }
 
@@ -305,7 +329,7 @@ const removeOrderItem = async (req, res) => {
     )
 
     if (items.length === 0) {
-      return res.status(404).json({ message: 'Khong tim thay mon' })
+      return res.status(404).json({ message: 'Không tìm thấy món' })
     }
 
     await db.query(
@@ -320,7 +344,13 @@ const removeOrderItem = async (req, res) => {
 
     if (remaining.length === 0) {
       await db.query('DELETE FROM orders WHERE id = ?', [id])
-      return res.json({ message: 'Da xoa mon va huy order vi khong con mon nao' })
+      const response = { message: 'Đã xoá món và huỷ order vì không còn món nào' }
+      res.json(response)
+      emitOrdersChanged({
+        type: 'order-removed',
+        orderId: Number(id),
+      })
+      return
     }
 
     const newTotal = remaining.reduce(
@@ -333,9 +363,15 @@ const removeOrderItem = async (req, res) => {
       [newTotal, id]
     )
 
-    res.json({ message: 'Xoa mon thanh cong', total_price: newTotal })
+    res.json({ message: 'Xoá món thành công', total_price: newTotal })
+
+    emitOrdersChanged({
+      type: 'item-removed',
+      orderId: Number(id),
+      itemId: Number(item_id),
+    })
   } catch (error) {
-    res.status(500).json({ message: 'Loi server', error: error.message })
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
 }
 

@@ -7,7 +7,7 @@ function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    'Khong the xu ly yeu cau.'
+    'Không thể xử lý yêu cầu.'
   )
 }
 
@@ -55,7 +55,7 @@ export default function AdminTablesPage() {
     try {
       await tableApi.create({ name: trimmedName })
       setNewName('')
-      setSuccess(`Da tao ban "${trimmedName}" thanh cong.`)
+      setSuccess(`Đã tạo bàn "${trimmedName}" thành công.`)
       await fetchTables()
     } catch (createError) {
       setError(getErrorMessage(createError))
@@ -81,16 +81,16 @@ export default function AdminTablesPage() {
   return (
     <div className="atp-page">
       <div className="atp-header">
-        <h1 className="atp-title">Quan ly ban</h1>
+        <h1 className="atp-title">Quản lý bàn</h1>
         <button className="btn btn-ghost" onClick={fetchTables} disabled={loading}>
-          {loading ? <span className="spinner" /> : 'Lam moi'}
+          {loading ? <span className="spinner" /> : 'Làm mới'}
         </button>
       </div>
 
       <div className="atp-create-bar">
         <input
           className="atp-input"
-          placeholder="Ten ban moi..."
+          placeholder="Tên bàn mới..."
           value={newName}
           onChange={(event) => setNewName(event.target.value)}
           onKeyDown={handleKeyDown}
@@ -102,7 +102,7 @@ export default function AdminTablesPage() {
           onClick={handleCreate}
           disabled={creating || !newName.trim()}
         >
-          {creating ? <span className="spinner" /> : '+'} Them ban
+          {creating ? <span className="spinner" /> : '+'} Thêm bàn
         </button>
       </div>
 
@@ -111,13 +111,13 @@ export default function AdminTablesPage() {
 
       {loading ? (
         <div className="atp-loading">
-          <span className="spinner" /> Dang tai danh sach ban...
+          <span className="spinner" /> Đang tải danh sách bàn...
         </div>
       ) : tables.length === 0 ? (
         <div className="atp-empty">
           <div className="atp-empty-icon">Ban</div>
-          <strong>Chua co ban nao</strong>
-          <p>Nhap ten va nhan "Them ban" de bat dau.</p>
+          <strong>Chưa có bàn nào</strong>
+          <p>Nhập tên và nhấn "Thêm bàn" để bắt đầu.</p>
         </div>
       ) : (
         <div className="atp-grid">

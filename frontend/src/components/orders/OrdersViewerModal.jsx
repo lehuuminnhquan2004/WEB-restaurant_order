@@ -13,7 +13,7 @@ export default function OrdersViewerModal({
   onRemoveItem,
   isRemoveDisabled,
   removingItemKey,
-  emptyText = 'Chua co don nao.',
+  emptyText = 'Chưa có đơn nào.',
 }) {
   return (
     <div className="amp-modal-backdrop" onClick={(event) => event.target === event.currentTarget && onClose()}>
@@ -23,7 +23,7 @@ export default function OrdersViewerModal({
             <h2 className="amp-modal__title">{title}</h2>
             {subtitle && <p className="ovm-modal__subtitle">{subtitle}</p>}
           </div>
-          <button className="btn btn-ghost" onClick={onClose}>Dong</button>
+          <button className="btn btn-ghost" onClick={onClose}>Đóng</button>
         </div>
 
         <OrdersViewerContent

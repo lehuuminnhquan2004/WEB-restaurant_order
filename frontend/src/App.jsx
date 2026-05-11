@@ -16,7 +16,10 @@ import OrderPage from './pages/customer/OrderPage';
 import StaffOrdersPage from './pages/staff/StaffOrdersPage';
 import StaffServingPage from './pages/staff/StaffServingPage';
 import StaffTablesPage from './pages/staff/StaffTablesPage';
+import StaffChatPage from './pages/staff/StaffChatPage';
+import StaffPaymentPage from './pages/staff/StaffPaymentPage';
 import KitchenPage from './pages/kitchen/KitchenPage';
+import BannerManagerPage from './pages/shared/BannerManagerPage';
 
 //Admin
 import AdminTablesPage from './pages/admin/AdminTablesPage';
@@ -50,6 +53,9 @@ export default function App() {
             <Route path="/staff/orders" element={<StaffOrdersPage />} />
             <Route path="/staff/serving" element={<StaffServingPage />} />
             <Route path="/staff/tables" element={<StaffTablesPage />} />
+            <Route path="/staff/chat" element={<StaffChatPage />} />
+            <Route path="/staff/payments" element={<StaffPaymentPage />} />
+            <Route path="/staff/banners" element={<BannerManagerPage />} />
           </Route>
         </Route>
 
@@ -68,6 +74,7 @@ export default function App() {
             <Route path="/admin/categories" element={<AdminCategoryPage />} />
             <Route path="/admin/tables" element={<AdminTablesPage />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
+            <Route path="/admin/banners" element={<BannerManagerPage />} />
           </Route>
         </Route>
 

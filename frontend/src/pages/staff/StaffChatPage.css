@@ -1,0 +1,174 @@
+.scp-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 340px) minmax(0, 1fr);
+  gap: 1rem;
+  min-height: calc(100dvh - 160px);
+}
+
+.scp-list,
+.scp-chat {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.scp-list {
+  padding: 0.6rem;
+  display: grid;
+  gap: 0.55rem;
+  align-content: start;
+}
+
+.scp-empty,
+.scp-chat__placeholder {
+  color: #64748b;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.scp-thread {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: center;
+  text-align: left;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 0.75rem;
+  cursor: pointer;
+}
+
+.scp-thread--active {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.scp-thread__icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.scp-thread strong {
+  color: #0f172a;
+}
+
+.scp-thread p {
+  margin: 0.15rem 0 0;
+  color: #64748b;
+  font-size: 0.86rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scp-thread span {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.scp-chat {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.scp-chat__placeholder {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.8rem;
+  min-height: 420px;
+}
+
+.scp-chat__header {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.scp-chat__header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.1rem;
+}
+
+.scp-chat__header p {
+  margin: 0.2rem 0 0;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.scp-chat__body {
+  padding: 1rem;
+  overflow-y: auto;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.scp-message {
+  max-width: min(78%, 520px);
+}
+
+.scp-message span {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.scp-message p {
+  margin: 0;
+  border-radius: 14px;
+  padding: 0.75rem 0.9rem;
+  line-height: 1.45;
+}
+
+.scp-message--customer p {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+}
+
+.scp-message--staff {
+  align-self: flex-end;
+  text-align: right;
+}
+
+.scp-message--staff p {
+  background: #2563eb;
+  color: #fff;
+}
+
+.scp-chat__form {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.scp-chat__form input {
+  flex: 1;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+  outline: none;
+}
+
+@media (max-width: 860px) {
+  .scp-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .scp-chat {
+    min-height: 520px;
+  }
+}

@@ -40,7 +40,7 @@ const updateCategory = async(req, res)=>{
             return res.status(404).json({message: 'Không tìm thấy danh mục'})
         }
 
-        res.json({message: 'Cập nhập danh mục thành công'})
+        res.json({message: 'Cập nhật danh mục thành công'})
     }catch(error){
         res.status(500).json({message: "Lỗi Server", error: error.message})
     }
@@ -55,7 +55,7 @@ const deleteCategory = async (req, res) => {
 
     if (products.length > 0) {
       return res.status(400).json({
-        message: 'Không thể xóa danh mục đang có món ăn',
+        message: 'Không thể xoá danh mục đang có món ăn',
       })
     }
 
@@ -68,7 +68,7 @@ const deleteCategory = async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy danh mục' })
     }
 
-    res.json({ message: 'Xóa danh mục thành công' })
+    res.json({ message: 'Xoá danh mục thành công' })
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error: error.message })
   }

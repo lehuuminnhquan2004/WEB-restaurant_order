@@ -14,7 +14,7 @@ function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    'Khong the xu ly yeu cau.'
+    'Không thể xử lý yêu cầu.'
   )
 }
 
@@ -129,7 +129,7 @@ export default function StaffTablesPage() {
         items,
       })
 
-      setSuccess(`Da them mon cho ${selectedTable.name}.`)
+      setSuccess(`Đã thêm món cho ${selectedTable.name}.`)
       setSelectedTable(null)
       setModalMode('')
       setCart({})
@@ -146,7 +146,7 @@ export default function StaffTablesPage() {
     if (!selectedTable) return
 
     const confirmed = window.confirm(
-      `Xac nhan xoa mon "${item.product_name}" khoi ${selectedTable.name}?`
+      `Xác nhận xoá món "${item.product_name}" khỏi ${selectedTable.name}?`
     )
 
     if (!confirmed) return
@@ -157,7 +157,7 @@ export default function StaffTablesPage() {
 
     try {
       await orderApi.removeItem(item.order_id, item.id)
-      setSuccess(`Da xoa mon "${item.product_name}" khoi ${selectedTable.name}.`)
+      setSuccess(`Đã xoá món "${item.product_name}" khỏi ${selectedTable.name}.`)
       await refreshSelectedTableOrders(selectedTable)
       await fetchTables()
     } catch (removeError) {
@@ -171,7 +171,7 @@ export default function StaffTablesPage() {
     if (!selectedTable || !orders.length) return
 
     const confirmed = window.confirm(
-      `Xac nhan da thanh toan toan bo cac don chua tra tien cua ${selectedTable.name}?`
+      `Xác nhận đã thanh toán toàn bộ các đơn chưa trả tiền của ${selectedTable.name}?`
     )
 
     if (!confirmed) return
@@ -184,7 +184,7 @@ export default function StaffTablesPage() {
         await orderApi.updateStatus(order.id, 'paid')
       }
 
-      setSuccess(`Da xac nhan thanh toan cho ${selectedTable.name}.`)
+      setSuccess(`Đã xác nhận thanh toán cho ${selectedTable.name}.`)
       await refreshSelectedTableOrders(selectedTable)
       await fetchTables()
     } catch (paymentError) {
@@ -198,12 +198,12 @@ export default function StaffTablesPage() {
     <div className="sp-page">
       <div className="sp-header">
         <div>
-          <h1 className="sp-title">Quan ly ban</h1>
-          <p className="sp-subtitle">Xem QR, reset ban va tao them order moi cho ban dang phuc vu.</p>
+          <h1 className="sp-title">Quản lý bàn</h1>
+          <p className="sp-subtitle">Xem QR, reset bàn và tạo thêm order mới cho bàn đang phục vụ.</p>
         </div>
 
         <button className="btn btn-ghost" onClick={fetchTables} disabled={loading}>
-          {loading ? 'Dang tai...' : 'Lam moi'}
+          {loading ? 'Đang tải...' : 'Làm mới'}
         </button>
       </div>
 
@@ -211,9 +211,9 @@ export default function StaffTablesPage() {
       {success && <div className="amp-feedback amp-feedback--success">{success}</div>}
 
       {loading ? (
-        <div className="sp-empty">Dang tai danh sach ban...</div>
+        <div className="sp-empty">Đang tải danh sách bàn...</div>
       ) : tables.length === 0 ? (
-        <div className="sp-empty">Chua co ban nao trong he thong.</div>
+        <div className="sp-empty">Chưa có bàn nào trong hệ thống.</div>
       ) : (
         <div className="sp-table-grid">
           {tables.map((table) => (
@@ -236,13 +236,13 @@ export default function StaffTablesPage() {
                     className="table-card__btn table-card__btn--primary"
                     onClick={() => openTableModal(table, 'add')}
                   >
-                    Them mon
+                    Thêm món
                   </button>
                   <button
                     className="table-card__btn table-card__btn--ghost"
                     onClick={() => openTableModal(table, 'orders')}
                   >
-                    Xem don
+                    Xem đơn
                   </button>
                 </>
               }
@@ -255,16 +255,16 @@ export default function StaffTablesPage() {
         modalLoading ? (
           <div className="amp-modal-backdrop">
             <div className="amp-modal sp-modal">
-              <div className="sp-empty">Dang tai du lieu cua ban...</div>
+              <div className="sp-empty">Đang tải dữ liệu của bàn...</div>
             </div>
           </div>
         ) : modalMode === 'orders' ? (
           <OrdersViewerModal
-            title={`Don cua ${selectedTable.name}`}
-            subtitle="Theo doi cac don dang mo va mon da goi tai ban nay."
+            title={`Đơn của ${selectedTable.name}`}
+            subtitle="Theo dõi các đơn đang mở và món đã gọi tại bàn này."
             tableName={selectedTable.name}
             orders={activeOrders}
-            actionLabel="Xac nhan da thanh toan"
+            actionLabel="Xác nhận đã thanh toán"
             onAction={handleConfirmPaid}
             isActionDisabled={(orders) =>
               submitting ||

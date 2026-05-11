@@ -15,7 +15,7 @@ function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    'Khong the xu ly yeu cau.'
+    'Không thể xử lý yêu cầu.'
   )
 }
 
@@ -57,12 +57,12 @@ function MenuFormModal({ initial, categories, onSave, onClose, saving }) {
     <div className="amp-modal-backdrop" onClick={(event) => event.target === event.currentTarget && onClose()}>
       <div className="amp-modal">
         <h2 className="amp-modal__title">
-          {initial?.id ? 'Chinh sua mon' : 'Them mon moi'}
+          {initial?.id ? 'Chỉnh sửa món' : 'Thêm món mới'}
         </h2>
 
         <div className="amp-form">
           <label className="amp-label">
-            Ten mon *
+            Tên món *
             <input
               className="amp-input"
               value={form.name}
@@ -88,7 +88,7 @@ function MenuFormModal({ initial, categories, onSave, onClose, saving }) {
           </label>
 
           <label className="amp-label">
-            Danh muc
+            Danh mục
             <select
               className="amp-select"
               value={form.category_id}
@@ -104,7 +104,7 @@ function MenuFormModal({ initial, categories, onSave, onClose, saving }) {
           </label>
 
           <div className="amp-toggle-row">
-            <span className="amp-toggle-label">Con phuc vu</span>
+            <span className="amp-toggle-label">Còn phục vụ</span>
             <label className="amp-toggle">
               <input
                 type="checkbox"
@@ -122,9 +122,9 @@ function MenuFormModal({ initial, categories, onSave, onClose, saving }) {
             onClick={handleSubmit}
             disabled={saving || !form.name.trim() || !form.price || !form.category_id}
           >
-            {saving ? 'Dang luu...' : 'Luu'}
+            {saving ? 'Đang lưu...' : 'Lưu'}
           </Btn>
-          <Btn variant="ghost" onClick={onClose} disabled={saving}>Huy</Btn>
+          <Btn variant="ghost" onClick={onClose} disabled={saving}>Huỷ</Btn>
         </div>
       </div>
     </div>
@@ -136,15 +136,15 @@ function ConfirmDeleteModal({ item, onConfirm, onClose, busy }) {
     <div className="amp-modal-backdrop" onClick={(event) => event.target === event.currentTarget && onClose()}>
       <div className="amp-modal">
         <div className="amp-confirm">
-          <p>Xac nhan xoa mon <strong>"{item.name}"</strong>?</p>
+          <p>Xác nhận xoá món <strong>"{item.name}"</strong>?</p>
           <p style={{ fontSize: '0.82rem', color: '#b45309' }}>
-            Hanh dong nay khong the hoan tac.
+            Hành động này không thể hoàn tác.
           </p>
           <div className="amp-confirm__actions">
             <Btn variant="danger" onClick={onConfirm} disabled={busy}>
-              {busy ? 'Dang xoa...' : 'Xoa'}
+              {busy ? 'Đang xoá...' : 'Xoá'}
             </Btn>
-            <Btn variant="ghost" onClick={onClose} disabled={busy}>Huy</Btn>
+            <Btn variant="ghost" onClick={onClose} disabled={busy}>Huỷ</Btn>
           </div>
         </div>
       </div>
@@ -225,16 +225,16 @@ export default function AdminMenuPage() {
     const item = modal?.item
 
     if (item?.id) {
-      withSave(`Da cap nhat "${formData.name}".`, () => productApi.update(item.id, formData))
+      withSave(`Đã cập nhật "${formData.name}".`, () => productApi.update(item.id, formData))
       return
     }
 
-    withSave(`Da them "${formData.name}".`, () => productApi.create(formData))
+    withSave(`Đã thêm "${formData.name}".`, () => productApi.create(formData))
   }
 
   function handleDeleteConfirm() {
     const item = modal?.item
-    withSave(`Da xoa "${item.name}".`, () => productApi.delete(item.id))
+    withSave(`Đã xoá "${item.name}".`, () => productApi.delete(item.id))
   }
 
   function handleToggle(item) {
@@ -254,9 +254,9 @@ export default function AdminMenuPage() {
   return (
     <div className="amp-page">
       <div className="amp-header">
-        <h1 className="amp-title">Quan ly thuc don</h1>
+        <h1 className="amp-title">Quản lý thực đơn</h1>
         <div className="amp-toolbar">
-          <Btn variant="ghost" onClick={fetchItems} disabled={loading}>Lam moi</Btn>
+          <Btn variant="ghost" onClick={fetchItems} disabled={loading}>Làm mới</Btn>
           <Btn
             onClick={() => setModal({
               type: 'form',
@@ -267,7 +267,7 @@ export default function AdminMenuPage() {
             })}
             disabled={!categories.length}
           >
-            + Them mon
+            + Thêm món
           </Btn>
         </div>
       </div>

@@ -41,9 +41,9 @@ function TableVerifyPage(){
         return (
             <div className="flex min-h-screen items-center justify-center px-4">
                 <div className="max-w-sm rounded-xl border border-red-200 bg-white p-6 text-center shadow-sm">
-                    <h1 className="mb-2 text-lg font-semibold text-red-600">Khong the xac thuc ban</h1>
+                    <h1 className="mb-2 text-lg font-semibold text-red-600">Không thể xác thực bàn</h1>
                     <p className="text-sm text-gray-600">
-                        Ma QR khong hop le hoac da het han. Vui long lien he nhan vien de duoc ho tro.
+                        Mã QR không hợp lệ hoặc đã hết hạn. Vui lòng liên hệ nhân viên để được hỗ trợ.
                     </p>
                 </div>
             </div>

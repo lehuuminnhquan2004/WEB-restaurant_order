@@ -178,6 +178,94 @@ INSERT INTO `tables` (`id`, `name`, `token`, `status`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `banners`
+--
+
+DROP TABLE IF EXISTS `banners`;
+CREATE TABLE IF NOT EXISTS `banners` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `text` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bg` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '#ffe8d6',
+  `image` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sort_order` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `banners`
+--
+
+INSERT INTO `banners` (`id`, `text`, `bg`, `image`, `sort_order`) VALUES
+(1, 'Khai trương - Giảm 20% tất cả món', '#ffe8d6', 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80', 0),
+(2, 'Combo trưa đặc biệt chỉ từ 59.000đ', '#d6f0e0', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80', 1),
+(3, 'Món mới tháng này - Thử ngay!', '#d6e8ff', 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `chat_messages`
+--
+
+DROP TABLE IF EXISTS `chat_messages`;
+CREATE TABLE IF NOT EXISTS `chat_messages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `table_id` int NOT NULL,
+  `table_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sender` enum('customer','staff') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `table_id` (`table_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `users`
+--
+
+-- Cấu trúc bảng cho bảng `payment_requests`
+--
+
+DROP TABLE IF EXISTS `payment_requests`;
+CREATE TABLE IF NOT EXISTS `payment_requests` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `table_id` int NOT NULL,
+  `table_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `method` enum('cash','transfer') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'cash',
+  `status` enum('pending','completed','cancelled') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `total_amount` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `order_ids` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `table_id` (`table_id`),
+  KEY `status` (`status`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `payment_settings`
+--
+
+DROP TABLE IF EXISTS `payment_settings`;
+CREATE TABLE IF NOT EXISTS `payment_settings` (
+  `id` int NOT NULL,
+  `transfer_qr_image` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `transfer_note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `payment_settings` (`id`, `transfer_qr_image`, `transfer_note`) VALUES
+(1, '', 'Vui lòng chuyển khoản theo mã QR và báo nhân viên sau khi hoàn tất.');
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `users`
 --
 

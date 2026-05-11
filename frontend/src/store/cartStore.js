@@ -5,7 +5,7 @@ function createCartItem(product) {
     cart_item_id: `${product.id}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     product_id: product.id,
     name: product.name,
-    price: product.price,
+    price: Number(product.price) || 0,
     quantity: 1,
     note: '',
   }
@@ -52,7 +52,7 @@ const useCartStore = create((set, get) => ({
   clearCart: () => set({ items: [] }),
 
   totalItems: () => get().items.length,
-  totalPrice: () => get().items.reduce((sum, item) => sum + item.price, 0),
+  totalPrice: () => get().items.reduce((sum, item) => sum + Number(item.price || 0), 0),
 }))
 
 export default useCartStore

@@ -36,15 +36,15 @@ export default function StaffAddItemsModal({
       <div className="amp-modal sp-modal sp-modal--wide">
         <div className="sp-modal__header">
           <div>
-            <h2 className="amp-modal__title">Them mon cho {table.name}</h2>
-            <p className="sp-subtitle">Chon mon can goi them cho ban nay.</p>
+            <h2 className="amp-modal__title">Thêm món cho {table.name}</h2>
+            <p className="sp-subtitle">Chọn món cần gọi thêm cho bàn này.</p>
           </div>
-          <button className="btn btn-ghost" onClick={onClose} disabled={busy}>Dong</button>
+          <button className="btn btn-ghost" onClick={onClose} disabled={busy}>Đóng</button>
         </div>
 
         <div className="sp-summary-grid">
           <div className="sp-summary-card">
-            <span className="sp-summary-card__label">Don dang mo</span>
+            <span className="sp-summary-card__label">Đơn đang mở</span>
             <strong>{activeSummary.orderCount}</strong>
           </div>
           <div className="sp-summary-card">
@@ -52,7 +52,7 @@ export default function StaffAddItemsModal({
             <strong>{formatPrice(activeSummary.total)}</strong>
           </div>
           <div className="sp-summary-card">
-            <span className="sp-summary-card__label">Mon sap them</span>
+            <span className="sp-summary-card__label">Món sắp thêm</span>
             <strong>{totalQuantity}</strong>
           </div>
         </div>
@@ -61,7 +61,7 @@ export default function StaffAddItemsModal({
           <div className="sp-inline-orders">
             {activeOrders.map((order) => (
               <div key={order.id} className="sp-inline-orders__item">
-                <span>Don #{order.id}</span>
+                <span>Đơn #{order.id}</span>
                 <span>{order.status}</span>
                 <span>{formatPrice(order.total_price)}</span>
               </div>
@@ -80,7 +80,7 @@ export default function StaffAddItemsModal({
 
         <div className="sp-modal__footer">
           <div>
-            <span className="sp-order-card__total-label">Tong gia tri them</span>
+            <span className="sp-order-card__total-label">Tổng giá trị thêm</span>
             <strong className="sp-order-card__total-value">{formatPrice(totalPrice)}</strong>
           </div>
 
@@ -89,7 +89,7 @@ export default function StaffAddItemsModal({
             onClick={onSubmit}
             disabled={busy || totalQuantity === 0}
           >
-            {busy ? 'Dang tao don...' : 'Them mon vao ban'}
+            {busy ? 'Đang tạo đơn...' : 'Thêm món vào bàn'}
           </button>
         </div>
       </div>

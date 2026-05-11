@@ -84,9 +84,27 @@ const resetTable = async (req, res) => {
   try {
     const { id } = req.params
 
+    const [activeOrders] = await db.query(
+      `
+      SELECT id, status
+      FROM orders
+      WHERE table_id = ?
+        AND status IN ('confirmed', 'preparing', 'done')
+      `,
+      [id]
+    )
+
+    if (activeOrders.length > 0) {
+      return res.status(400).json({
+        message: 'Không thể reset bàn đang có đơn đã xác nhận',
+      })
+    }
+
+    const token = crypto.randomBytes(16).toString('hex')
+
     const [result] = await db.query(
-      `UPDATE tables SET status = ? WHERE id = ?`,
-      ['available', id]
+      `UPDATE tables SET status = ?, token = ? WHERE id = ?`,
+      ['available', token, id]
     )
 
     if (result.affectedRows === 0) {
@@ -95,6 +113,7 @@ const resetTable = async (req, res) => {
 
     res.json({
       message: 'Reset bàn thành công',
+      token,
     })
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error: error.message })
@@ -120,17 +139,12 @@ const verifyTableToken = async (req, res) => {
 
     const table = rows[0]
 
-    await db.query(
-      `UPDATE tables SET status = ? WHERE id = ?`,
-      ['occupied', table.id]
-    )
-
     res.json({
       message: 'Xác thực bàn thành công',
       table: {
         id: table.id,
         name: table.name,
-        status: 'occupied',
+        status: table.status,
         token: table.token,
       },
     })

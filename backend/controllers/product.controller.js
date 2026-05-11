@@ -87,7 +87,7 @@ const updateProduct = async (req, res) => {
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Không tìm thấy món ăn' })
         }
-        res.json({ message: 'Cập nhập món ăn thành công' })
+        res.json({ message: 'Cập nhật món ăn thành công' })
     } catch (error) {
         res.status(500).json({ message: 'Lỗi Server', error: error.message })
     }
@@ -103,7 +103,7 @@ const deleteProduct = async (req, res) => {
             return res.status(404).json({ message: 'Không tìm thấy món ăn' })
         }
 
-        res.json({ message: 'Xóa món ăn thành công' })
+        res.json({ message: 'Xoá món ăn thành công' })
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server', error: error.message })
     }

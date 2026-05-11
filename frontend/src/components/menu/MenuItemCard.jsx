@@ -74,7 +74,7 @@ export default function MenuItemCard({
 
       {/* body */}
       <div className="mic__body">
-        <p className="mic__category">{categoryName || "Chua phan loai"}</p>
+        <p className="mic__category">{categoryName || "Chưa phân loại"}</p>
         <h3 className="mic__name">{item.name}</h3>
         <div className="mic__price">{formatPrice(item.price)}</div>
       </div>

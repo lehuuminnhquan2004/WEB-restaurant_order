@@ -1,33 +1,35 @@
 // src/components/shared/DashboardLayout.jsx
-import { useEffect } from 'react';
-import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { NavLink } from 'react-router-dom';
+import { useEffect } from 'react'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 
-// react-icons/fi
 import {
-  FiGrid,
-  FiList,
-  FiUsers,
-  FiShoppingBag,
   FiCoffee,
-  FiTag,
+  FiCreditCard,
+  FiGrid,
+  FiImage,
+  FiList,
   FiLogOut,
-} from 'react-icons/fi';
+  FiMessageCircle,
+  FiShoppingBag,
+  FiTag,
+  FiUsers,
+} from 'react-icons/fi'
+import { MdTableRestaurant } from 'react-icons/md'
 
-import { MdTableRestaurant } from 'react-icons/md';
+import useAuthStore from '../../store/authStore'
+import '../../styles/DashboardLayout.css'
 
-import useAuthStore from '../../store/authStore';
-import '../../styles/DashboardLayout.css';
-
-/* ─── Menu config theo role ─── */
 const NAV_CONFIG = {
   staff: [
     {
       section: 'Quản lý',
       items: [
-        { label: 'Đơn hàng',   icon: <FiList />,       path: '/staff/orders' },
-        { label: 'Phục vụ',    icon: <FiCoffee />,     path: '/staff/serving' },
-        { label: 'Bàn',        icon: <MdTableRestaurant />, path: '/staff/tables' },
+        { label: 'Đơn hàng', icon: <FiList />, path: '/staff/orders' },
+        { label: 'Phục vụ', icon: <FiCoffee />, path: '/staff/serving' },
+        { label: 'Bàn', icon: <MdTableRestaurant />, path: '/staff/tables' },
+        { label: 'Hỗ trợ', icon: <FiMessageCircle />, path: '/staff/chat' },
+        { label: 'Thanh toán', icon: <FiCreditCard />, path: '/staff/payments' },
+        { label: 'Banner', icon: <FiImage />, path: '/staff/banners' },
       ],
     },
   ],
@@ -43,90 +45,88 @@ const NAV_CONFIG = {
     {
       section: 'Quản lý',
       items: [
-        { label: 'Tổng quan',   icon: <FiGrid />,       path: '/admin' },
-        { label: 'Bàn',         icon: <MdTableRestaurant />, path: '/admin/tables' },
+        { label: 'Tổng quan', icon: <FiGrid />, path: '/admin' },
+        { label: 'Bàn', icon: <MdTableRestaurant />, path: '/admin/tables' },
+        { label: 'Thanh toán', icon: <FiCreditCard />, path: '/staff/payments' },
+        { label: 'Banner', icon: <FiImage />, path: '/admin/banners' },
       ],
     },
     {
       section: 'Thực đơn',
       items: [
-        { label: 'Món ăn',      icon: <FiShoppingBag />, path: '/admin/products' },
-        { label: 'Danh mục',    icon: <FiTag />,          path: '/admin/categories' },
+        { label: 'Món ăn', icon: <FiShoppingBag />, path: '/admin/products' },
+        { label: 'Danh mục', icon: <FiTag />, path: '/admin/categories' },
       ],
     },
     {
       section: 'Nhân sự',
       items: [
-        { label: 'Người dùng',  icon: <FiUsers />,        path: '/admin/users' },
+        { label: 'Người dùng', icon: <FiUsers />, path: '/admin/users' },
       ],
     },
   ],
-};
+}
 
-/* ─── Role label ─── */
 const ROLE_LABEL = {
-  staff:   'Nhân viên',
+  staff: 'Nhân viên',
   kitchen: 'Bếp',
-  admin:   'Quản trị',
-};
+  admin: 'Quản trị',
+}
 
-/* ─── Lấy initials từ tên ─── */
 function getInitials(name = '') {
   return name
     .split(' ')
     .map((w) => w[0])
     .slice(-2)
     .join('')
-    .toUpperCase() || 'U';
+    .toUpperCase() || 'U'
 }
 
-/* ─── Page title theo pathname ─── */
 function getPageTitle(pathname) {
   const map = {
-    '/staff/orders':      'Đơn hàng',
-    '/staff/serving':     'Phục vụ món',
-    '/staff/tables':      'Quản lý bàn',
-    '/kitchen':           'Màn hình bếp',
-    '/admin':             'Tổng quan',
-    '/admin/tables':      'Quản lý bàn',
-    '/admin/products':    'Quản lý món ăn',
-    '/admin/categories':  'Danh mục',
-    '/admin/users':       'Người dùng',
-  };
-  return map[pathname] ?? 'Restaurant OS';
+    '/staff/orders': 'Đơn hàng',
+    '/staff/serving': 'Phục vụ món',
+    '/staff/tables': 'Quản lý bàn',
+    '/staff/chat': 'Hỗ trợ khách hàng',
+    '/staff/payments': 'Thanh toán',
+    '/staff/banners': 'Quản lý banner',
+    '/kitchen': 'Màn hình bếp',
+    '/admin': 'Tổng quan',
+    '/admin/tables': 'Quản lý bàn',
+    '/admin/banners': 'Quản lý banner',
+    '/admin/products': 'Quản lý món ăn',
+    '/admin/categories': 'Danh mục',
+    '/admin/users': 'Người dùng',
+  }
+  return map[pathname] ?? 'Restaurant OS'
 }
 
 export default function DashboardLayout() {
-  const { user, logout } = useAuthStore();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { user, logout } = useAuthStore()
+  const navigate = useNavigate()
+  const location = useLocation()
 
-  const role = user?.role ?? 'staff';
-  const displayName = user?.username ?? user?.name ?? 'Nguoi dung';
-  const sections = NAV_CONFIG[role] ?? [];
-
-  // Flatten items để dùng cho bottom nav
-  const allItems = sections.flatMap((s) => s.items);
+  const role = user?.role ?? 'staff'
+  const displayName = user?.username ?? user?.name ?? 'Người dùng'
+  const sections = NAV_CONFIG[role] ?? []
+  const allItems = sections.flatMap((s) => s.items)
 
   function handleLogout() {
-    logout();
-    navigate('/login');
+    logout()
+    navigate('/login')
   }
 
-  // Redirect nếu chưa login (phòng thủ thêm, ProtectedRoute đã xử lý chính)
   useEffect(() => {
-    if (!user) navigate('/login');
-  }, [user, navigate]);
+    if (!user) navigate('/login')
+  }, [user, navigate])
 
-  if (!user) return null;
+  if (!user) return null
 
-  const pageTitle = getPageTitle(location.pathname);
+  const pageTitle = getPageTitle(location.pathname)
 
   return (
     <div className="dashboard-layout">
-      {/* ══════════ SIDEBAR (desktop) ══════════ */}
       <aside className="sidebar">
-        {/* Brand */}
         <div className="sidebar-brand">
           <div className="sidebar-brand-icon">
             <FiCoffee />
@@ -137,7 +137,6 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        {/* Nav */}
         <nav className="sidebar-nav">
           {sections.map((section) => (
             <div key={section.section}>
@@ -159,7 +158,6 @@ export default function DashboardLayout() {
           ))}
         </nav>
 
-        {/* Footer: user info + logout */}
         <div className="sidebar-footer">
           <div className="sidebar-user">
             <div className="sidebar-user-avatar">
@@ -177,21 +175,16 @@ export default function DashboardLayout() {
         </div>
       </aside>
 
-      {/* ══════════ MAIN ══════════ */}
       <div className="dashboard-main">
-        {/* Topbar */}
         <header className="topbar">
           <h1 className="topbar-title">{pageTitle}</h1>
-          {/* Slot cho action buttons — các page con có thể dùng portal nếu cần */}
         </header>
 
-        {/* Page content — Outlet render page tương ứng */}
         <main className="page-content">
           <Outlet />
         </main>
       </div>
 
-      {/* ══════════ BOTTOM NAV (mobile) ══════════ */}
       <nav className="bottom-nav">
         {allItems.map((item) => (
           <NavLink
@@ -207,12 +200,11 @@ export default function DashboardLayout() {
           </NavLink>
         ))}
 
-        {/* Logout ở bottom nav mobile */}
         <button className="bottom-nav-item" onClick={handleLogout}>
           <span className="bottom-nav-icon"><FiLogOut /></span>
           <span className="bottom-nav-label">Thoát</span>
         </button>
       </nav>
     </div>
-  );
+  )
 }

@@ -1,19 +1,20 @@
 import { useCallback, useEffect, useState } from 'react'
 import orderApi from '../../api/orderApi'
+import socket from '../../api/socket'
 import '../admin/AdminMenuPage.css'
 import '../admin/AdminTablesPage.css'
 import './StaffBase.css'
 import './StaffOrdersPage.css'
 
 const NEXT_STATUS = {
-  pending: { status: 'confirmed', label: 'Xac nhan don' },
+  pending: { status: 'confirmed', label: 'Xác nhận đơn' },
 }
 
 function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    'Khong the xu ly yeu cau.'
+    'Không thể xử lý yêu cầu.'
   )
 }
 
@@ -61,6 +62,22 @@ export default function StaffOrdersPage() {
   }, [fetchOrders])
 
   useEffect(() => {
+    if (!socket.connected) {
+      socket.connect()
+    }
+
+    function handleOrdersChanged() {
+      fetchOrders()
+    }
+
+    socket.on('orders:changed', handleOrdersChanged)
+
+    return () => {
+      socket.off('orders:changed', handleOrdersChanged)
+    }
+  }, [fetchOrders])
+
+  useEffect(() => {
     if (!success) return
 
     const timeoutId = setTimeout(() => setSuccess(''), 3000)
@@ -73,7 +90,7 @@ export default function StaffOrdersPage() {
 
     try {
       await orderApi.updateStatus(order.id, nextStatus)
-      setSuccess(`Da cap nhat don #${order.id} sang "${nextStatus}".`)
+      setSuccess(`Đã cập nhật đơn #${order.id} sang "${nextStatus}".`)
       await fetchOrders()
     } catch (updateError) {
       setError(getErrorMessage(updateError))
@@ -86,12 +103,12 @@ export default function StaffOrdersPage() {
     <div className="sp-page">
       <div className="sp-header">
         <div>
-          <h1 className="sp-title">Xac nhan don hang</h1>
-          <p className="sp-subtitle">Chi hien thi cac don cho xac nhan de chuyen sang bep.</p>
+          <h1 className="sp-title">Xác nhận đơn hàng</h1>
+          <p className="sp-subtitle">Chỉ hiển thị các đơn chờ xác nhận để chuyển sang bếp.</p>
         </div>
 
         <button className="btn btn-ghost" onClick={fetchOrders} disabled={loading}>
-          {loading ? 'Dang tai...' : 'Lam moi'}
+          {loading ? 'Đang tải...' : 'Làm mới'}
         </button>
       </div>
 
@@ -99,9 +116,9 @@ export default function StaffOrdersPage() {
       {success && <div className="amp-feedback amp-feedback--success">{success}</div>}
 
       {loading ? (
-        <div className="sp-empty">Dang tai danh sach don...</div>
+        <div className="sp-empty">Đang tải danh sách đơn...</div>
       ) : orders.length === 0 ? (
-        <div className="sp-empty">Khong co don pending nao can staff xac nhan.</div>
+        <div className="sp-empty">Không có đơn pending nào cần staff xác nhận.</div>
       ) : (
         <div className="sp-order-list">
           {orders.map((order) => {
@@ -111,7 +128,7 @@ export default function StaffOrdersPage() {
               <article key={order.id} className="sp-order-card">
                 <div className="sp-order-card__head">
                   <div>
-                    <div className="sp-order-card__eyebrow">Don #{order.id}</div>
+                    <div className="sp-order-card__eyebrow">Đơn #{order.id}</div>
                     <h2 className="sp-order-card__title">{order.table_name || `Ban ${order.table_id}`}</h2>
                     <p className="sp-order-card__meta">{formatTime(order.created_at)}</p>
                   </div>
@@ -126,7 +143,7 @@ export default function StaffOrdersPage() {
                     <div key={item.id} className="sp-order-item">
                       <div>
                         <strong>{item.product_name}</strong>
-                        {item.note && <p className="sp-order-item__note">Ghi chu: {item.note}</p>}
+                        {item.note && <p className="sp-order-item__note">Ghi chú: {item.note}</p>}
                       </div>
                       <div className="sp-order-item__side">
                         <span>x{item.quantity}</span>
@@ -138,7 +155,7 @@ export default function StaffOrdersPage() {
 
                 <div className="sp-order-card__foot">
                   <div>
-                    <span className="sp-order-card__total-label">Tong tien</span>
+                    <span className="sp-order-card__total-label">Tổng tiền</span>
                     <strong className="sp-order-card__total-value">{formatPrice(order.total_price)}</strong>
                   </div>
 
@@ -149,11 +166,11 @@ export default function StaffOrdersPage() {
                         onClick={() => handleChangeStatus(order, nextAction.status)}
                         disabled={actingId === order.id}
                       >
-                        {actingId === order.id ? 'Dang cap nhat...' : nextAction.label}
+                        {actingId === order.id ? 'Đang cập nhật...' : nextAction.label}
                       </button>
                     ) : (
                       <button className="btn btn-ghost" disabled>
-                        Khong co thao tac tiep
+                        Không có thao tác tiếp
                       </button>
                     )}
                   </div>

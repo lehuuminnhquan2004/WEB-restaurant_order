@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import productApi from '../../api/productApi'
 import categoryApi from '../../api/categoryApi'
+import uploadApi from '../../api/uploadApi'
 import MenuItemGrid from '../../components/menu/MenuItemGrid'
 import './AdminMenuPage.css'
 
@@ -16,7 +17,7 @@ function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    'Khong the xu ly yeu cau.'
+    'Không thể xử lý yêu cầu.'
   )
 }
 
@@ -32,6 +33,8 @@ function ProductFormModal({ initial, categories, onSave, onClose, saving }) {
       category_id: categories[0]?.id ?? '',
     }
   )
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [uploadError, setUploadError] = useState('')
 
   function setField(key, value) {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -55,16 +58,32 @@ function ProductFormModal({ initial, categories, onSave, onClose, saving }) {
     })
   }
 
+  async function handleUploadImage(file) {
+    if (!file) return
+
+    setUploadingImage(true)
+    setUploadError('')
+
+    try {
+      const response = await uploadApi.uploadImage(file)
+      setField('image', response.data.url)
+    } catch (error) {
+      setUploadError(getErrorMessage(error))
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
   return (
     <div className="amp-modal-backdrop" onClick={(event) => event.target === event.currentTarget && onClose()}>
       <div className="amp-modal">
         <h2 className="amp-modal__title">
-          {initial?.id ? 'Chinh sua mon' : 'Them mon moi'}
+          {initial?.id ? 'Chỉnh sửa món' : 'Thêm món mới'}
         </h2>
 
         <div className="amp-form">
           <label className="amp-label">
-            Ten mon *
+            Tên món *
             <input
               className="amp-input"
               value={form.name}
@@ -90,18 +109,51 @@ function ProductFormModal({ initial, categories, onSave, onClose, saving }) {
           </label>
 
           <label className="amp-label">
-            Anh mon
+            Ảnh món
+            <input
+              className="amp-input"
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              onChange={(event) => handleUploadImage(event.target.files?.[0])}
+              disabled={saving || uploadingImage}
+            />
+            {uploadingImage && (
+              <span style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: 650 }}>
+                Đang tải ảnh lên...
+              </span>
+            )}
+            {uploadError && (
+              <span style={{ fontSize: '0.82rem', color: '#b91c1c', fontWeight: 650 }}>
+                {uploadError}
+              </span>
+            )}
             <input
               className="amp-input"
               value={form.image}
               onChange={(event) => setField('image', event.target.value)}
               placeholder="https://example.com/pho-bo.jpg"
-              disabled={saving}
+              disabled={saving || uploadingImage}
             />
           </label>
 
+          {form.image && (
+            <div style={{
+              borderRadius: 8,
+              border: '1px solid #e2e8f0',
+              overflow: 'hidden',
+              aspectRatio: '16 / 9',
+              background: '#f8fafc',
+            }}>
+              <img
+                src={form.image}
+                alt={form.name || 'Ảnh món'}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+            </div>
+          )}
+
           <label className="amp-label">
-            Danh muc
+            Danh mục
             <select
               className="amp-select"
               value={form.category_id}
@@ -117,7 +169,7 @@ function ProductFormModal({ initial, categories, onSave, onClose, saving }) {
           </label>
 
           <div className="amp-toggle-row">
-            <span className="amp-toggle-label">Con phuc vu</span>
+            <span className="amp-toggle-label">Còn phục vụ</span>
             <label className="amp-toggle">
               <input
                 type="checkbox"
@@ -133,11 +185,11 @@ function ProductFormModal({ initial, categories, onSave, onClose, saving }) {
         <div className="amp-modal__actions" style={{ marginTop: '1rem' }}>
           <Btn
             onClick={handleSubmit}
-            disabled={saving || !form.name.trim() || !form.price || !form.category_id}
+            disabled={saving || uploadingImage || !form.name.trim() || !form.price || !form.category_id}
           >
-            {saving ? 'Dang luu...' : 'Luu'}
+            {saving ? 'Đang lưu...' : uploadingImage ? 'Đang tải ảnh...' : 'Lưu'}
           </Btn>
-          <Btn variant="ghost" onClick={onClose} disabled={saving}>Huy</Btn>
+          <Btn variant="ghost" onClick={onClose} disabled={saving || uploadingImage}>Huỷ</Btn>
         </div>
       </div>
     </div>
@@ -149,15 +201,15 @@ function ConfirmDeleteModal({ item, onConfirm, onClose, busy }) {
     <div className="amp-modal-backdrop" onClick={(event) => event.target === event.currentTarget && onClose()}>
       <div className="amp-modal">
         <div className="amp-confirm">
-          <p>Xac nhan xoa mon <strong>"{item.name}"</strong>?</p>
+          <p>Xác nhận xoá món <strong>"{item.name}"</strong>?</p>
           <p style={{ fontSize: '0.82rem', color: '#b45309' }}>
-            Hanh dong nay khong the hoan tac.
+            Hành động này không thể hoàn tác.
           </p>
           <div className="amp-confirm__actions">
             <Btn variant="danger" onClick={onConfirm} disabled={busy}>
-              {busy ? 'Dang xoa...' : 'Xoa'}
+              {busy ? 'Đang xoá...' : 'Xoá'}
             </Btn>
-            <Btn variant="ghost" onClick={onClose} disabled={busy}>Huy</Btn>
+            <Btn variant="ghost" onClick={onClose} disabled={busy}>Huỷ</Btn>
           </div>
         </div>
       </div>
@@ -239,16 +291,16 @@ export default function AdminProductPage() {
     const item = modal?.item
 
     if (item?.id) {
-      withSave(`Da cap nhat "${formData.name}".`, () => productApi.update(item.id, formData))
+      withSave(`Đã cập nhật "${formData.name}".`, () => productApi.update(item.id, formData))
       return
     }
 
-    withSave(`Da them "${formData.name}".`, () => productApi.create(formData))
+    withSave(`Đã thêm "${formData.name}".`, () => productApi.create(formData))
   }
 
   function handleDeleteConfirm() {
     const item = modal?.item
-    withSave(`Da xoa "${item.name}".`, () => productApi.delete(item.id))
+    withSave(`Đã xoá "${item.name}".`, () => productApi.delete(item.id))
   }
 
   function handleToggle(item) {
@@ -268,9 +320,9 @@ export default function AdminProductPage() {
   return (
     <div className="amp-page">
       <div className="amp-header">
-        <h1 className="amp-title">Quan ly mon an</h1>
+        <h1 className="amp-title">Quản lý món ăn</h1>
         <div className="amp-toolbar">
-          <Btn variant="ghost" onClick={fetchItems} disabled={loading}>Lam moi</Btn>
+          <Btn variant="ghost" onClick={fetchItems} disabled={loading}>Làm mới</Btn>
           <Btn
             onClick={() => setModal({
               type: 'form',
@@ -281,7 +333,7 @@ export default function AdminProductPage() {
             })}
             disabled={!categories.length}
           >
-            + Them mon
+            + Thêm món
           </Btn>
         </div>
       </div>

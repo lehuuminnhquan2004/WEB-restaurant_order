@@ -4,6 +4,8 @@ import { FiHome, FiList, FiFileText, FiChevronRight } from 'react-icons/fi';
 import useTableStore from "../../store/tableStore";
 import { useEffect, useRef, useState } from "react";
 import productApi from '../../api/productApi'
+import bannerApi from '../../api/bannerApi'
+import CustomerSupportChat from '../../components/customer/CustomerSupportChat'
 import './HomePage.css'
 
 // Bottom nav dùng chung cho các trang customer
@@ -38,11 +40,25 @@ export function CustomerBottomNav({active}){
   )
 }
 
-// ── Banners mock (thay bằng API sau) ─────────────────────────────────────
-const MOCK_BANNERS = [
-  { id: 1, bg: '#ffe8d6', text: '🎉 Khai trương — Giảm 20% tất cả món' },
-  { id: 2, bg: '#d6f0e0', text: '🍜 Combo trưa đặc biệt chỉ từ 59.000đ' },
-  { id: 3, bg: '#d6e8ff', text: '⭐ Món mới tháng này — Thử ngay!' },
+const DEFAULT_BANNERS = [
+  {
+    id: 1,
+    bg: '#ffe8d6',
+    text: 'Khai trương - Giảm 20% tất cả món',
+    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    id: 2,
+    bg: '#d6f0e0',
+    text: 'Combo trưa đặc biệt chỉ từ 59.000đ',
+    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    id: 3,
+    bg: '#d6e8ff',
+    text: 'Món mới tháng này - Thử ngay!',
+    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80',
+  },
 ]
 
 export default function HomePage(){
@@ -50,20 +66,36 @@ export default function HomePage(){
     const { tableId, tableName }= useTableStore()
 
     const [bestSellers, setBestSellers] = useState([])
+    const [banners, setBanners] = useState(DEFAULT_BANNERS)
     const [bannerIdx, setBannerIdx] = useState(0)
     const bannerTimer = useRef(null)
 
     useEffect(()=>{
         if(!tableId) navigate('/login', {replace: true})
-    },[tableId,tableName])
+    },[tableId,navigate])
 
-      // Auto chay banner quang cao
+    useEffect(() => {
+        bannerApi.getAll()
+        .then((res) => {
+            const activeBanners = Array.isArray(res.data)
+                ? res.data.filter((banner) => banner.text || banner.image)
+                : []
+
+            if (activeBanners.length > 0) {
+                setBanners(activeBanners)
+                setBannerIdx(0)
+            }
+        })
+        .catch(() => {})
+    }, [])
+
+      // Auto chạy banner quảng cáo
     useEffect(() => {
         bannerTimer.current = setInterval(() => {
-        setBannerIdx((i) => (i + 1) % MOCK_BANNERS.length)
+        setBannerIdx((i) => (i + 1) % banners.length)
         }, 3200)
         return () => clearInterval(bannerTimer.current)
-    }, [])
+    }, [banners.length])
 
     useEffect(()=>{
         productApi.getAll().then((res)=>{
@@ -85,7 +117,7 @@ export default function HomePage(){
             <div className="home-header__table-badge">
             Bàn <strong>{tableName || '—'}</strong>
             </div>
-            <h1 className="home-header__name">Nhà Hàng ABC</h1>
+            <h1 className="home-header__name">MINH QUÂN RESTAURANT</h1>
             <p className="home-header__sub">Chào mừng bạn đến với chúng tôi 🙌</p>
         </header>
     
@@ -95,20 +127,23 @@ export default function HomePage(){
             className="home-banner__track"
             style={{ transform: `translateX(-${bannerIdx * 100}%)` }}
             >
-            {MOCK_BANNERS.map((b) => (
+            {banners.map((b) => (
                 <div
                 key={b.id}
                 className="home-banner__slide"
                 style={{ background: b.bg }}
                 >
-                <p className="home-banner__text">{b.text}</p>
+                {b.image && (
+                    <img className="home-banner__image" src={b.image} alt={b.text || 'Banner'} />
+                )}
+                {b.text && <p className="home-banner__text">{b.text}</p>}
                 </div>
             ))}
             </div>
     
             {/* Dots */}
             <div className="home-banner__dots">
-            {MOCK_BANNERS.map((_, i) => (
+            {banners.map((_, i) => (
                 <button
                 key={i}
                 className={`home-banner__dot ${i === bannerIdx ? 'home-banner__dot--active' : ''}`}
@@ -171,12 +206,13 @@ export default function HomePage(){
             onClick={() => navigate('/orders')}
             >
             <FiFileText size={20} />
-            Thanh Toán
+            Thanh toán
             </button>
         </section>
     
         {/* ── Bottom Nav ── */}
         <CustomerBottomNav active="home" />
+        <CustomerSupportChat />
         </div>
     )
 }

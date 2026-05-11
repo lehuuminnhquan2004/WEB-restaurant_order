@@ -11,7 +11,7 @@ const getUsers = async (req, res) => {
 
     if (role) {
       if (!VALID_ROLES.includes(role)) {
-        return res.status(400).json({ message: 'Role khong hop le' })
+        return res.status(400).json({ message: 'Role không hợp lệ' })
       }
 
       clauses.push('role = ?')
@@ -31,7 +31,7 @@ const getUsers = async (req, res) => {
 
     res.json(users)
   } catch (error) {
-    res.status(500).json({ message: 'Loi server', error: error.message })
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
 }
 
@@ -40,16 +40,16 @@ const createUser = async (req, res) => {
     const { username, password, role } = req.body
 
     if (!username || !password || !role) {
-      return res.status(400).json({ message: 'Vui long nhap du thong tin' })
+      return res.status(400).json({ message: 'Vui lòng nhập đủ thông tin' })
     }
 
     if (!VALID_ROLES.includes(role)) {
-      return res.status(400).json({ message: 'Role khong hop le' })
+      return res.status(400).json({ message: 'Role không hợp lệ' })
     }
 
     const trimmedUsername = username.trim()
     if (!trimmedUsername) {
-      return res.status(400).json({ message: 'Username khong duoc de trong' })
+      return res.status(400).json({ message: 'Username không được để trống' })
     }
 
     const [existing] = await db.query(
@@ -58,7 +58,7 @@ const createUser = async (req, res) => {
     )
 
     if (existing.length > 0) {
-      return res.status(400).json({ message: 'Username da ton tai' })
+      return res.status(400).json({ message: 'Username đã tồn tại' })
     }
 
     const hashedPassword = await bcrypt.hash(password, 12)
@@ -69,7 +69,7 @@ const createUser = async (req, res) => {
     )
 
     res.status(201).json({
-      message: 'Them tai khoan thanh cong',
+      message: 'Thêm tài khoản thành công',
       user: {
         id: result.insertId,
         username: trimmedUsername,
@@ -77,7 +77,7 @@ const createUser = async (req, res) => {
       },
     })
   } catch (error) {
-    res.status(500).json({ message: 'Loi server', error: error.message })
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
 }
 
@@ -87,16 +87,16 @@ const updateUser = async (req, res) => {
     const { username, password, role } = req.body
 
     if (!username || !role) {
-      return res.status(400).json({ message: 'Vui long nhap du thong tin' })
+      return res.status(400).json({ message: 'Vui lòng nhập đủ thông tin' })
     }
 
     if (!VALID_ROLES.includes(role)) {
-      return res.status(400).json({ message: 'Role khong hop le' })
+      return res.status(400).json({ message: 'Role không hợp lệ' })
     }
 
     const trimmedUsername = username.trim()
     if (!trimmedUsername) {
-      return res.status(400).json({ message: 'Username khong duoc de trong' })
+      return res.status(400).json({ message: 'Username không được để trống' })
     }
 
     const [users] = await db.query(
@@ -105,7 +105,7 @@ const updateUser = async (req, res) => {
     )
 
     if (users.length === 0) {
-      return res.status(404).json({ message: 'Khong tim thay tai khoan' })
+      return res.status(404).json({ message: 'Không tìm thấy tài khoản' })
     }
 
     const [duplicated] = await db.query(
@@ -114,7 +114,7 @@ const updateUser = async (req, res) => {
     )
 
     if (duplicated.length > 0) {
-      return res.status(400).json({ message: 'Username da ton tai' })
+      return res.status(400).json({ message: 'Username đã tồn tại' })
     }
 
     if (password && password.trim()) {
@@ -130,9 +130,9 @@ const updateUser = async (req, res) => {
       )
     }
 
-    res.json({ message: 'Cap nhat tai khoan thanh cong' })
+    res.json({ message: 'Cập nhật tài khoản thành công' })
   } catch (error) {
-    res.status(500).json({ message: 'Loi server', error: error.message })
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
 }
 
@@ -146,14 +146,14 @@ const deleteUser = async (req, res) => {
     )
 
     if (users.length === 0) {
-      return res.status(404).json({ message: 'Khong tim thay tai khoan' })
+      return res.status(404).json({ message: 'Không tìm thấy tài khoản' })
     }
 
     await db.query('DELETE FROM users WHERE id = ?', [id])
 
-    res.json({ message: `Da xoa tai khoan ${users[0].username}` })
+    res.json({ message: `Đã xoá tài khoản ${users[0].username}` })
   } catch (error) {
-    res.status(500).json({ message: 'Loi server', error: error.message })
+    res.status(500).json({ message: 'Lỗi server', error: error.message })
   }
 }
 

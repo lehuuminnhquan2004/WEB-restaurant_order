@@ -27,7 +27,7 @@ function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    'Co loi xay ra.'
+    'Có lỗi xảy ra.'
   )
 }
 
@@ -83,7 +83,7 @@ export default function TableCard({
       await tableApi.update(table.id, { name: trimmedName })
 
       if (typeof onRefresh === 'function') {
-        await onRefresh(`Da cap nhat ten ban thanh "${trimmedName}".`)
+        await onRefresh(`Đã cập nhật tên bàn thành "${trimmedName}".`)
       }
     })
 
@@ -97,7 +97,7 @@ export default function TableCard({
         await tableApi.delete(table.id)
 
         if (typeof onRefresh === 'function') {
-          await onRefresh('Da xoa ban thanh cong.')
+          await onRefresh('Đã xoá bàn thành công.')
         }
       })
     }
@@ -107,7 +107,7 @@ export default function TableCard({
         await tableApi.reset(table.id)
 
         if (typeof onRefresh === 'function') {
-          await onRefresh('Da reset ban thanh cong.')
+          await onRefresh('Đã reset bàn thành công.')
         }
       })
     }
@@ -133,7 +133,7 @@ export default function TableCard({
               <QRCodeCanvas value={qrUrl} size={220} />
             </div>
 
-            <p className="table-card__modal-text">Quet de vao ban</p>
+            <p className="table-card__modal-text">Quét để vào bàn</p>
 
             <a
               href={qrUrl}
@@ -183,7 +183,7 @@ export default function TableCard({
               onClick={handleRenameSubmit}
               disabled={busy}
             >
-              Luu
+              Lưu
             </button>
 
             <button
@@ -194,7 +194,7 @@ export default function TableCard({
               }}
               disabled={busy}
             >
-              Huy
+              Huỷ
             </button>
           </div>
         ) : (
@@ -209,7 +209,7 @@ export default function TableCard({
                 }}
                 disabled={busy}
               >
-                Doi ten
+                Đổi tên
               </button>
             )}
 
@@ -235,7 +235,7 @@ export default function TableCard({
                 }}
                 disabled={busy}
               >
-                Xoa
+                Xoá
               </button>
             )}
 
@@ -261,8 +261,8 @@ export default function TableCard({
           <div className="table-card__confirm">
             <p className="table-card__confirm-text">
               {confirming === 'delete'
-                ? `Xac nhan xoa ban "${table.name}"?`
-                : `Xac nhan reset ban "${table.name}"?`}
+                ? `Xác nhận xoá bàn "${table.name}"?`
+                : `Xác nhận reset bàn "${table.name}"?`}
             </p>
 
             <div className="table-card__confirm-actions">
@@ -275,7 +275,7 @@ export default function TableCard({
                 onClick={handleConfirm}
                 disabled={busy}
               >
-                {busy ? 'Dang xu ly...' : 'Xac nhan'}
+                {busy ? 'Đang xử lý...' : 'Xác nhận'}
               </button>
 
               <button
@@ -283,7 +283,7 @@ export default function TableCard({
                 onClick={() => setConfirming(null)}
                 disabled={busy}
               >
-                Huy
+                Huỷ
               </button>
             </div>
           </div>

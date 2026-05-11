@@ -7,7 +7,7 @@ import './AdminTablesPage.css'
 import './AdminUsersPage.css'
 
 const ROLES = [
-  { value: 'all', label: 'Tat ca role' },
+  { value: 'all', label: 'Tất cả role' },
   { value: 'admin', label: 'Admin' },
   { value: 'staff', label: 'Staff' },
   { value: 'kitchen', label: 'Kitchen' },
@@ -23,7 +23,7 @@ function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    'Khong the xu ly yeu cau.'
+    'Không thể xử lý yêu cầu.'
   )
 }
 
@@ -56,7 +56,7 @@ function UserFormModal({ initial, onSave, onClose, saving }) {
     <div className="amp-modal-backdrop" onClick={(event) => event.target === event.currentTarget && onClose()}>
       <div className="amp-modal">
         <h2 className="amp-modal__title">
-          {initial?.id ? 'Chinh sua tai khoan' : 'Them tai khoan moi'}
+          {initial?.id ? 'Chỉnh sửa tài khoản' : 'Thêm tài khoản mới'}
         </h2>
 
         <div className="amp-form">
@@ -73,13 +73,13 @@ function UserFormModal({ initial, onSave, onClose, saving }) {
           </label>
 
           <label className="amp-label">
-            {initial?.id ? 'Mat khau moi (bo trong neu khong doi)' : 'Mat khau *'}
+            {initial?.id ? 'Mật khẩu mới (bỏ trống nếu không đổi)' : 'Mật khẩu *'}
             <input
               className="amp-input"
               type="password"
               value={form.password}
               onChange={(event) => setField('password', event.target.value)}
-              placeholder={initial?.id ? 'Nhap neu muon doi mat khau' : 'Nhap mat khau'}
+              placeholder={initial?.id ? 'Nhập nếu muốn đổi mật khẩu' : 'Nhập mật khẩu'}
               disabled={saving}
             />
           </label>
@@ -106,9 +106,9 @@ function UserFormModal({ initial, onSave, onClose, saving }) {
             onClick={handleSubmit}
             disabled={saving || !form.username.trim() || (!initial?.id && !form.password.trim())}
           >
-            {saving ? 'Dang luu...' : 'Luu'}
+            {saving ? 'Đang lưu...' : 'Lưu'}
           </Btn>
-          <Btn variant="ghost" onClick={onClose} disabled={saving}>Huy</Btn>
+          <Btn variant="ghost" onClick={onClose} disabled={saving}>Huỷ</Btn>
         </div>
       </div>
     </div>
@@ -120,15 +120,15 @@ function ConfirmDeleteModal({ item, onConfirm, onClose, busy }) {
     <div className="amp-modal-backdrop" onClick={(event) => event.target === event.currentTarget && onClose()}>
       <div className="amp-modal">
         <div className="amp-confirm">
-          <p>Xac nhan xoa tai khoan <strong>"{item.username}"</strong>?</p>
+          <p>Xác nhận xoá tài khoản <strong>"{item.username}"</strong>?</p>
           <p style={{ fontSize: '0.82rem', color: '#b45309' }}>
-            Hanh dong nay khong the hoan tac.
+            Hành động này không thể hoàn tác.
           </p>
           <div className="amp-confirm__actions">
             <Btn variant="danger" onClick={onConfirm} disabled={busy}>
-              {busy ? 'Dang xoa...' : 'Xoa'}
+              {busy ? 'Đang xoá...' : 'Xoá'}
             </Btn>
-            <Btn variant="ghost" onClick={onClose} disabled={busy}>Huy</Btn>
+            <Btn variant="ghost" onClick={onClose} disabled={busy}>Huỷ</Btn>
           </div>
         </div>
       </div>
@@ -208,37 +208,37 @@ export default function AdminUsersPage() {
     const item = modal?.item
 
     if (item?.id) {
-      withSave(`Da cap nhat tai khoan "${formData.username}".`, () =>
+      withSave(`Đã cập nhật tài khoản "${formData.username}".`, () =>
         userApi.update(item.id, formData)
       )
       return
     }
 
-    withSave(`Da them tai khoan "${formData.username}".`, () =>
+    withSave(`Đã thêm tài khoản "${formData.username}".`, () =>
       userApi.create(formData)
     )
   }
 
   function handleDeleteConfirm() {
     const item = modal?.item
-    withSave(`Da xoa tai khoan "${item.username}".`, () => userApi.delete(item.id))
+    withSave(`Đã xoá tài khoản "${item.username}".`, () => userApi.delete(item.id))
   }
 
   return (
     <div className="amp-page">
       <div className="amp-header">
-        <h1 className="amp-title">Quan ly nguoi dung</h1>
+        <h1 className="amp-title">Quản lý người dùng</h1>
         <div className="amp-toolbar">
-          <Btn variant="ghost" onClick={fetchUsers} disabled={loading}>Lam moi</Btn>
+          <Btn variant="ghost" onClick={fetchUsers} disabled={loading}>Làm mới</Btn>
           <Btn onClick={() => setModal({ type: 'form', item: { ...EMPTY_FORM } })}>
-            + Them tai khoan
+            + Thêm tài khoản
           </Btn>
         </div>
       </div>
 
       <div className="ovm-summary-grid" style={{ marginBottom: '1rem' }}>
         <div className="ovm-summary-card">
-          <span className="ovm-summary-card__label">Tong tai khoan</span>
+          <span className="ovm-summary-card__label">Tổng tài khoản</span>
           <strong>{stats.total}</strong>
         </div>
         <div className="ovm-summary-card">
@@ -283,12 +283,12 @@ export default function AdminUsersPage() {
       {loading ? (
         <div className="mig__empty">
           <div className="mig__empty-icon">...</div>
-          <p>Dang tai danh sach tai khoan...</p>
+          <p>Đang tải danh sách tài khoản...</p>
         </div>
       ) : users.length === 0 ? (
         <div className="mig__empty">
           <div className="mig__empty-icon">U</div>
-          <p>Khong tim thay tai khoan nao.</p>
+          <p>Không tìm thấy tài khoản nào.</p>
         </div>
       ) : (
         <div className="atp-grid">
@@ -319,13 +319,13 @@ export default function AdminUsersPage() {
                     })
                   }
                 >
-                  Sua
+                  Sửa
                 </button>
                 <button
                   className="table-card__btn table-card__btn--danger"
                   onClick={() => setModal({ type: 'delete', item: user })}
                 >
-                  Xoa
+                  Xoá
                 </button>
               </div>
             </div>

@@ -1,5 +1,19 @@
 import './OrdersViewerModal.css'
 
+const ORDER_STATUS_LABEL = {
+  pending: 'Chờ xác nhận',
+  confirmed: 'Đã xác nhận',
+  preparing: 'Đang chế biến',
+  done: 'Chờ phục vụ',
+  paid: 'Đã thanh toán',
+}
+
+const ITEM_STATUS_LABEL = {
+  pending: 'Đang chờ',
+  done: 'Đã xong',
+  served: 'Đã phục vụ',
+}
+
 function formatPrice(value) {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -72,7 +86,7 @@ export default function OrdersViewerContent({
   onRemoveItem,
   isRemoveDisabled,
   removingItemKey = '',
-  emptyText = 'Chua co don nao.',
+  emptyText = 'Chưa có đơn nào.',
 }) {
   const totalOrders = orders.length
   const totalAmount = orders.reduce(
@@ -96,15 +110,15 @@ export default function OrdersViewerContent({
 
       <div className="ovm-summary-grid">
         <div className="ovm-summary-card">
-          <span className="ovm-summary-card__label">Tong don dang mo</span>
+          <span className="ovm-summary-card__label">Tổng đơn đang mở</span>
           <strong>{totalOrders}</strong>
         </div>
         <div className="ovm-summary-card">
-          <span className="ovm-summary-card__label">Tong tam tinh</span>
+          <span className="ovm-summary-card__label">Tổng tạm tính</span>
           <strong>{formatPrice(totalAmount)}</strong>
         </div>
         <div className="ovm-summary-card">
-          <span className="ovm-summary-card__label">Tong mon chua thanh toan</span>
+          <span className="ovm-summary-card__label">Tổng món chưa thanh toán</span>
           <strong>{mergedItems.length}</strong>
         </div>
       </div>
@@ -115,10 +129,10 @@ export default function OrdersViewerContent({
         <div className="ovm-order-card">
           <div className="ovm-order-card__head">
             <div>
-              <div className="ovm-order-card__eyebrow">Tat ca don chua thanh toan</div>
+              <div className="ovm-order-card__eyebrow">Tất cả đơn chưa thanh toán</div>
               <h2 className="ovm-order-card__title">{tableName}</h2>
               <p className="ovm-order-card__meta">
-                Hien thi lien tuc theo thu tu don cu den moi
+                Hiển thị liên tục theo thứ tự đơn cũ đến mới
               </p>
             </div>
           </div>
@@ -128,11 +142,11 @@ export default function OrdersViewerContent({
               <div key={`${item.order_id}-${item.product_id}-${index}`} className="ovm-order-item">
                 <div>
                   <div className="ovm-order-item__meta">
-                    Don #{item.order_id} • {formatTime(item.created_at)} • {item.order_status}
+                    Đơn #{item.order_id} - {formatTime(item.created_at)} - {ORDER_STATUS_LABEL[item.order_status] || item.order_status}
                   </div>
                   <strong>{item.product_name}</strong>
-                  {item.note && <p className="ovm-order-item__note">Ghi chu: {item.note}</p>}
-                  <p className="ovm-order-item__note">Trang thai mon: {item.status}</p>
+                  {item.note && <p className="ovm-order-item__note">Ghi chú: {item.note}</p>}
+                  <p className="ovm-order-item__note">Trạng thái món: {ITEM_STATUS_LABEL[item.status] || item.status}</p>
                 </div>
                 <div className="ovm-order-item__side">
                   <span>x{item.quantity}</span>
@@ -143,7 +157,7 @@ export default function OrdersViewerContent({
                       onClick={() => onRemoveItem(item.rawItems[0])}
                       disabled={typeof isRemoveDisabled === 'function' ? isRemoveDisabled(item.rawItems[0]) : false}
                     >
-                      {removingItemKey === `${item.order_id}-${item.rawItems[0]?.id}` ? 'Dang xoa...' : 'Xoa 1 mon'}
+                      {removingItemKey === `${item.order_id}-${item.rawItems[0]?.id}` ? 'Đang xoá...' : 'Xoá 1 món'}
                     </button>
                   )}
                 </div>
@@ -153,7 +167,7 @@ export default function OrdersViewerContent({
 
           <div className="ovm-order-card__foot">
             <div>
-              <span className="ovm-order-card__total-label">Tong tien chua thanh toan</span>
+              <span className="ovm-order-card__total-label">Tổng tiền chưa thanh toán</span>
               <strong className="ovm-order-card__total-value">{formatPrice(totalAmount)}</strong>
             </div>
 
